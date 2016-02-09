@@ -5,7 +5,7 @@ Wordpress development framework
 1. Install coolascript-framework plugin to Wordpress.
 2. Add next lines to your theme\plugin project:
 ```
-if ( defined( 'CSFRAMEWORK_VERSION' ) && version_compare( CSFRAMEWORK_VERSION, TEST_MINIMUM_CSFRAMEWORK_VERSION, '>=' ) ) {
+if ( defined( 'CSFRAMEWORK_VERSION' ) ) {
 	class myApp extends \csframework\Csframework {}
 	$app = myApp::getInstance()
 		->setNamespace( 'myapp' )					// Your project PHP namespace for avoding conflicts
