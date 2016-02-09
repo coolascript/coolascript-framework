@@ -7,7 +7,7 @@ Wordpress development framework
 ```
 if ( defined( 'CSFRAMEWORK_VERSION' ) ) {
 	class myApp extends \csframework\Csframework {}
-	$app = myApp::getInstance()
+	myApp::getInstance()
 		->setNamespace( 'myapp' )					// Your project PHP namespace for avoding conflicts
 		->setApppath( 'myapp', TEST_PLUGIN_DIR )	// Path to your project
 		->setTextDomain( 'myapp' )					// WP locale text domain
