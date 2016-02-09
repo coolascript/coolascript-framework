@@ -9,7 +9,7 @@ if ( defined( 'CSFRAMEWORK_VERSION' ) ) {
 	class myApp extends \csframework\Csframework {}
 	myApp::getInstance()
 		->setNamespace( 'myapp' )					// Your project PHP namespace for avoding conflicts
-		->setApppath( 'myapp', TEST_PLUGIN_DIR )	// Path to your project
+		->setApppath( 'myapp', MYAPP_PLUGIN_DIR )	// Path to your project
 		->setTextDomain( 'myapp' )					// WP locale text domain
 		->setFieldsVar( 'myapp' )					// Key for all extra fields
 		->run();

@@ -150,13 +150,15 @@ class Csframework
 	private function _loadWidgets()
 	{
 		$dirs = $this->_autoloader->getIncludePaths();
-		foreach ($dirs as $dir) {
+		global $wp_widget_factory;
+		foreach ( $dirs as $dir ) {
 			if ( file_exists( $dir . 'widget' ) && $handle = opendir( $dir . 'widget' ) ) {
 				while ( false !== ( $entry = readdir( $handle ) ) ) {
 					if ( is_file( $dir . 'widget/' . $entry ) ) {
 						$class_name = $this->getNamespace() . '\Widget' . ucfirst( basename( $entry, '.php' ) );
 						if ( class_exists( $class_name ) ) {
 							register_widget( $class_name );
+							$wp_widget_factory->widgets[$class_name]->setApp( $this );
 						}
 					}
 				}
@@ -173,7 +175,7 @@ class Csframework
 	private function _loadTaxonomies()
 	{
 		$dirs = $this->_autoloader->getIncludePaths();
-		foreach ($dirs as $dir) {
+		foreach ( $dirs as $dir ) {
 			if ( file_exists( $dir . 'taxonomy' ) && $handle = opendir( $dir . 'taxonomy' ) ) {
 				while ( false !== ( $entry = readdir( $handle ) ) ) {
 					if ( is_file( $dir . 'taxonomy/' . $entry ) ) {
@@ -196,7 +198,7 @@ class Csframework
 	private function _loadPosttypes()
 	{
 		$dirs = $this->_autoloader->getIncludePaths();
-		foreach ($dirs as $dir) {
+		foreach ( $dirs as $dir ) {
 			if ( file_exists( $dir . 'taxonomy' ) && $handle = opendir( $dir . 'posttype' ) ) {
 				while ( false !== ( $entry = readdir( $handle ) ) ) {
 					if ( is_file( $dir . 'posttype/' . $entry ) ) {

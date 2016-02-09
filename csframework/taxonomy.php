@@ -1,6 +1,10 @@
 <?php
 namespace csframework;
 /**
+ * Makes it easy to create new taxonomies
+ * and add custom fields to it.
+ */
+/**
  * Creates a new taxonomy
  *
  * @param string $object_type Post type slug for which you'd like to create taxonomy
@@ -28,6 +32,11 @@ class Taxonomy
 	 */
 	protected $_app = null;
 
+	/**
+	 * Taxonomy constructor
+	 * @param string $object_type Post type slug for which you'd like to create taxonomy
+	 * @param array $args         Arguments for your taxonomy. See register_taxonomy (https://codex.wordpress.org/Function_Reference/register_taxonomy)
+	 */
 	protected function __construct( $object_type, $args = null )
 	{
 		if ( !taxonomy_exists( static::$taxonomy ) ) {

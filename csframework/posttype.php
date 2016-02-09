@@ -1,10 +1,8 @@
 <?php
 namespace csframework;
 /**
- * Creates a new post type
- *
- * @param string $slug Post type slug
- * @param array|null $args Arguments for your post type
+ * Makes it easy to create new custom post types
+ * and add custom fields to it.
  */
 class Posttype
 {
@@ -23,6 +21,11 @@ class Posttype
 	 */
 	protected $_app = null;
 
+	/**
+	 * Custom post type constructor
+	 * @param string $slug Post type slug
+	 * @param array $args Arguments for post type. See register_post_type (https://codex.wordpress.org/Function_Reference/register_post_type)
+	 */
 	protected function __construct( $slug, $args = null )
 	{
 		if ( is_null( $this->_app ) ) {
