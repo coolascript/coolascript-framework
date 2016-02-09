@@ -2,7 +2,7 @@
 Wordpress development framework
 
 # Getting Started
-1. Install coolascript-framework to Wordpress.
+1. Install coolascript-framework plugin to Wordpress.
 2. Add next lines to your theme\plugin project:
 ```
 if ( defined( 'CSFRAMEWORK_VERSION' ) && version_compare( CSFRAMEWORK_VERSION, TEST_MINIMUM_CSFRAMEWORK_VERSION, '>=' ) ) {
