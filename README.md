@@ -1,4 +1,4 @@
-# coolascript-framework
+# coolascript-framework (Currently in develope)
 Wordpress development framework
 
 # Getting Started
