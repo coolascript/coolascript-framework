@@ -10,7 +10,7 @@ namespace csframework;
  * @param string $object_type Post type slug for which you'd like to create taxonomy
  * @param array|null $args Arguments for your taxonomy
  */
-class Taxonomy
+class Taxonomy extends Base
 {
 	/**
 	 * Taxonomy slug

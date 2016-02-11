@@ -4,7 +4,7 @@ namespace csframework;
  * Makes it easy to create new custom post types
  * and add custom fields to it.
  */
-class Posttype
+class Posttype extends Base
 {
 	/**
 	 * Post type slug

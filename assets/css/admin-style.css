@@ -1,0 +1,149 @@
+.file-container {
+	max-width: 300px;
+}
+img {
+	height: auto;
+	max-width: 100%;
+}
+.field-row > .field {
+	padding: 15px 0;
+}
+.field-row + .field-row > .field {
+	border-top: 1px solid #ddd;
+}
+.field-row:after {
+	clear: both;
+	content: '';
+	display: block;
+}
+/* Settings */
+.csplugin-accordion {
+	margin-bottom: 15px;
+}
+.settings-fields {
+	margin: 0;
+}
+.settings-section-title {
+	background: #fff;
+	border: 1px solid #ddd;
+	cursor: pointer;
+	margin: 0;
+	padding: 10px;
+	position: relative;
+}
+.settings-section-title:before {
+	content: '\f140';
+	font: 400 20px/1 dashicons;
+	position: absolute;
+	right: 0;
+	width: 30px;
+}
+.settings-section-title.ui-state-active:before {
+	content: '\f142';
+}
+.settings-section-fields {
+	background: #fff;
+	border: 1px solid #ddd;
+	border-top: 0;
+}
+.settings-section-fields + .settings-section-title {
+	margin-top: 15px;
+}
+.field {
+	padding: 15px;
+}
+.settings-field + .settings-field > .field {
+	border-top: 1px solid #ddd;
+}
+h5.label {
+	margin: 0 0 15px;
+}
+.label {
+	display: block;
+	font-size: 13px;
+	font-weight: bold;
+	margin: 0 0 5px;
+}
+.field-description {
+	font-size: 12px;
+	font-style: italic;
+	padding: 5px 0;
+}
+.checkbox-label,
+.radio-label {
+	display: inline-block;
+}
+.checkbox-label,
+.radio-label {
+	margin-right: 15px;
+}
+.form-wrap .checkbox-label + .checkbox-label,
+.form-wrap .radio-label + .radio-label {
+	margin-left: 0;
+}
+.button.dashicons {
+	width: auto;
+}
+.repeatable-field-row {
+	position: relative;
+	padding: 15px 15px 15px 100px;
+}
+.repeatable-field-row + .repeatable-field-row {
+	border-top: 1px solid #ddd;
+}
+.repeatable-field-row .field-row {
+	border-top: 0;
+	padding: 0;
+	margin: 0 0 15px;
+}
+.fieldset-fields {
+	margin-left: 30px;
+}
+.field-fieldset > h3 {
+	margin-bottom: 0;
+}
+.csplugin-depend-field {
+	display: none;
+}
+.sortable-row-controls {
+	left: 0;
+	position: absolute;
+	top: 15px;
+}
+.sortable-row-controls + .field-row {
+	overflow: hidden;
+}
+.widget-field {
+	font-size: 13px;
+	line-height: 1.5;
+	margin: 1em 0;
+}
+.widget-field .options-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.widget-field .options-list li + li {
+	margin-top: 5px;
+}
+textarea {
+	min-height: 200px;
+}
+.field-content-map {
+	position: relative;
+	height: 478px;
+}
+.field-google-map-api {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+}
+.field-map-canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}

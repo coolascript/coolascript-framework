@@ -39,6 +39,10 @@ class Csframework
 	{
 		require_once __DIR__ . '/autoloader.php';
 		$this->_autoloader = new Autoloader;
+		add_action( 'wp_ajax_file', array( $this, 'ajaxFile' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'addAssets' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'addAdminAssets' ) );
+		add_action( 'login_enqueue_scripts', array( $this, 'addLoginAssets' ) );
 	}
 	private function __clone()
 	{
@@ -244,5 +248,104 @@ class Csframework
 		add_action( 'init', array( $this, 'init' ), 100 );
 		add_action( 'widgets_init', array( $this, 'widgets_init' ) );
 		return $this;
+	}
+
+	/**
+	 * Register all Framework's scripts and styles
+	 * List of Scripts:
+	 * 1. csframework-upload: File upload script for ajax uloading with File field.
+	 * 2. csframework-repeatable-field: Repeatable field functionality.
+	 * 3. csframework-date-field: Date field functionality.
+	 * 4. csframework-field: Fields functionality.
+	 * 5. csframework-accordion: Init accordions.
+	 * 6. csframework-color-field: Color field functionality.
+	 * 7. csframework-wysiwyg-field: WYSIWYG field functionality.
+	 * ===
+	 * Override this function in your class to enqueue scripts and styles on frontend.
+	 * Don't forget do parent::addScript();
+	 */
+	public function addAssets()
+	{
+		wp_register_script(
+			'csframework-ajax-form',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/ajax-form.js',
+			array( 'jquery' ),
+			'1.0.0',
+			true
+		);
+		wp_register_script(
+			'csframework-repeatable-field',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/repeatable.js',
+			array( 'jquery' ),
+			'1.0.0',
+			true
+		);
+		wp_register_script(
+			'csframework-date-field',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/date.js',
+			array( 'jquery' ),
+			'1.0.0',
+			true
+		);
+		wp_register_script(
+			'csframework-field',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/field.js',
+			array( 'jquery' ),
+			'1.0.0',
+			true
+		);
+		wp_register_script(
+			'csframework-accordion',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/accordion-init.js',
+			array( 'jquery' ),
+			'1.0.0',
+			true
+		);
+		wp_register_script(
+			'iris',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/iris.min.js',
+			array( 'jquery-ui-draggable', 'jquery-ui-slider' ),
+			'1.0.7',
+			true
+		);
+		wp_register_script(
+			'csframework-color-field',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/colorpicker-init.js',
+			array( 'iris' ),
+			'1.0.0',
+			true
+		);
+		wp_register_script(
+			'csframework-wysiwyg-field',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/wysiwyg.js',
+			array( 'jquery' ),
+			'1.0.0',
+			true
+		);
+		wp_register_script(
+			'csframework-upload',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/upload.js',
+			array( 'jquery', 'media-upload', 'thickbox' ),
+			'1.0.1',
+			true
+		);
+		wp_localize_script( 'csframework-upload', 'csframework', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
+
+	}
+
+	/**
+	 * Override this function in your class to enqueue scripts and styles on backend.
+	 * Don't forget do parent::addAdminScript();
+	 */
+	public function addAdminAssets() {
+		$this->addAssets();
+	}
+
+	/**
+	 * Override this function in your class to enqueue scripts and styles on login page.
+	 * Don't forget do parent::addLoginScript();
+	 */
+	public function addLoginAssets() {
+		$this->addAssets();
 	}
 }

@@ -23,8 +23,10 @@ abstract class Widget extends \WP_Widget
 			$widget_options,
 			$control_options
 		);
-		add_action( 'wp_ajax_file', array( $this, 'ajaxFile' ) );
-		$this->_addAssets();
+		add_action( 'wp_ajax_file', array( $this, 'ajaxFile' ), 100 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'addAssets' ), 100 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'addAdminAssets' ), 100 );
+		add_action( 'login_enqueue_scripts', array( $this, 'addLoginAssets' ), 100 );
 	}
 
 	/**
@@ -195,20 +197,25 @@ abstract class Widget extends \WP_Widget
 		<?php
 	}
 
-	protected function _addAssets()
-	{
-		$theme = Cstheme::getInstance();
-		$theme->scripts
-			->setEnqueueMedia( true )
-			->addScript( 'csframework-admin-upload', array(
-				'url' => get_template_directory_uri() . '/assets/cstheme/js/admin-upload.js',
-				'deps' => array( 'jquery', 'media-upload', 'thickbox' ),
-				'ver' => '1.0.1',
-				'load' => true,
-				'load_check' => 'is_admin'
-			) )
-			->localizeScript( 'theme-admin-upload', 'theme_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
+	/**
+	 * Override this function to your widget class to enqueue scripts and styles on frontend.
+	 * Don't forget do parent::addScript();
+	 */
+	public function addAssets() {}
+
+	/**
+	 * Override this function to your widget class to enqueue scripts and styles on backend.
+	 * Don't forget do parent::addAdminScript();
+	 */
+	public function addAdminAssets() {
+		wp_enqueue_script( 'csframework-admin-upload' );
 	}
+
+	/**
+	 * Override this function to your widget class to enqueue scripts and styles on login page.
+	 * Don't forget do parent::addLoginScript();
+	 */
+	public function addLoginAssets() {}
 
 	public function ajaxFile()
 	{
