@@ -107,7 +107,7 @@ class Autoloader
 	}
 
 	/**
-	 * Retrive include path by handle
+	 * Retrieve include path by handle
 	 * @param string $handle handle of a path
 	 * @return string|false
 	 */
@@ -120,7 +120,7 @@ class Autoloader
 	}
 
 	/**
-	 * Retrive all include pathes
+	 * Retrieve all include pathes
 	 * @return array
 	 */
 	public function getIncludePaths()

@@ -208,7 +208,7 @@ abstract class Widget extends \WP_Widget
 	 * Don't forget do parent::addAdminScript();
 	 */
 	public function addAdminAssets() {
-		wp_enqueue_script( 'csframework-admin-upload' );
+		wp_enqueue_script( 'csframework-upload' );
 	}
 
 	/**

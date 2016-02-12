@@ -53,7 +53,7 @@ class Posttype extends Base
 	}
 
 	/**
-	 * Retrive an instance of class
+	 * Retrieve an instance of class
 	 * @return csframework\Posttype
 	 */
 	public static function getInstance()
@@ -94,7 +94,7 @@ class Posttype extends Base
 	}
 
 	/**
-	 * Retrive the Post type slug
+	 * Retrieve the Post type slug
 	 * @return string
 	 */
 	public function getSlug()
@@ -110,13 +110,13 @@ class Posttype extends Base
 	public function addMetabox( $args )
 	{
 		if ( is_array( $args ) && isset( $args['name'] ) ) {
-			$this->_metaboxes[$args['name']] = new PosttypeMetabox( self::$post_type, $args );
+			$this->_metaboxes[$args['name']] = new PosttypeMetabox( self::$post_type, $this->_app, $args );
 		}
 		return $this;
 	}
 
 	/**
-	 * Retrive the Post type metabox by slug
+	 * Retrieve the Post type metabox by slug
 	 * @param string $slug
 	 * @return csframeworkPosttypeMetabox|false
 	 */
@@ -126,7 +126,7 @@ class Posttype extends Base
 	}
 
 	/**
-	 * Retrive all Post type metaboxes
+	 * Retrieve all Post type metaboxes
 	 * @return array
 	 */
 	public function getMetaboxes()

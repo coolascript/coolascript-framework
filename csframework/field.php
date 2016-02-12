@@ -1,28 +1,84 @@
 <?php
-/**
-* Field
-*/
-
 namespace csframework;
-abstract class Field extends Abstractive
+/**
+* Fields prototype class
+*/
+abstract class Field extends Base
 {
+	/**
+	 * Field label
+	 * @var string
+	 */
 	protected $_label = '';
+	/**
+	 * Field description
+	 * @var string
+	 */
 	protected $_description = '';
+	/**
+	 * Field name
+	 * @var string
+	 */
 	protected $_name = '';
+	/**
+	 * Index of field in some srapper such as Fieldset
+	 * @var int|null
+	 */
 	protected $_index = null;
+	/**
+	 * Field type
+	 * @var string
+	 */
 	protected $_type = '';
+	/**
+	 * Show label or not
+	 * @var boolean
+	 */
 	protected $_show_label = true;
+	/**
+	 * Field extra CSS class
+	 * @var string
+	 */
 	protected $_class = '';
+	/**
+	 * Default field value
+	 * @var mixed|null
+	 */
 	protected $_default = null;
+	/**
+	 * Field Value
+	 * @var mixed|null
+	 */
 	protected $_value = null;
+	/**
+	 * Field display dependencies
+	 * @var array
+	 */
 	protected $_depend = null;
-
+	/**
+	 * Sanitaze field function
+	 * @var string
+	 */
 	protected $_sanitize = 'text';
+	/**
+	 * Field parent class
+	 * @var object|null
+	 */
 	protected $_parent = null;
+	/**
+	 * @var csframework\Csframework|null
+	 */
+	protected $_app = null;
 
-	function __construct( $args )
+	/**
+	 * Instantiate Field object
+	 * @param csframework\Csframework $app  App object
+	 * @param array $args Field parameters
+	 */
+	function __construct( $app, $args )
 	{
 		if ( isset( $args['name'] ) && !empty( $args['name'] ) ) {
+			$this->_app = $app;
 			$parents = array();
 			if ( isset( $args['parent'] ) ) {
 				$parent = $args['parent'];
@@ -34,145 +90,233 @@ abstract class Field extends Abstractive
 			}
 			$parents = implode( '-', $parents ) . ( count( $parents ) ? '-' : '' );
 			$this->setOptions( $args );
-			$this->_addAssets();
 		}
 	}
 
-	private function _addAssets()
+	/**
+	 * Override this function in your class to enqueue scripts and styles on frontend.
+	 * Don't forget do parent::addScript();
+	 */
+	public function addAssets()
 	{
-		$theme = Csframework::getInstance();
-		Csframework::getScripts()
-			->addScript( 'theme-field', array(
-				'url' => get_template_directory_uri() . '/assets/csframework/js/field.js',
-				'deps' => array( 'jquery' ),
-				'ver' => '1.0.0',
-				'load' => true,
-				'load_check' => 'is_admin',
-			) );
+		parent::addAssets();
+		wp_enqueue_script( 'csframework-field' );
 	}
 
+	/**
+	 * Sets Field index parameter
+	 * @param int $val Index
+	 */
 	public function setIndex( $val )
 	{
 		$this->_index = ( int ) $val;
 		return $this;
 	}
 
+	/**
+	 * Retrieve Field index parameter
+	 * @return int Index
+	 */
 	public function getIndex()
 	{
 		return $this->_index;
 	}
 
+	/**
+	 * Sets Field label parameter
+	 * @param string $val Label
+	 */
 	public function setLabel( $val )
 	{
 		$this->_label = $val;
 		return $this;
 	}
 
+	/**
+	 * Retrieve Field label
+	 * @return string Label
+	 */
 	public function getLabel()
 	{
 		return $this->_label;
 	}
 
+	/**
+	 * Sets Field description
+	 * @param string $val Label
+	 */
 	public function setDescription( $val )
 	{
 		$this->_description = $val;
 		return $this;
 	}
 
+	/**
+	 * Retrieve Field description
+	 * @return string Description
+	 */
 	public function getDescription()
 	{
 		return $this->_description;
 	}
 
+	/**
+	 * Sets Field type
+	 * @param string $val Type
+	 */
 	public function setType( $val )
 	{
 		$this->_type = $val;
 		return $this;
 	}
 
+	/**
+	 * Retrieve Field type
+	 * @return string Type
+	 */
 	public function getType()
 	{
 		return $this->_type;
 	}
 
+	/**
+	 * Sets Show field label or not
+	 * @param bool $val
+	 */
 	public function setShow_label( $val )
 	{
 		$this->_show_label = ( bool ) $val;
 		return $this;
 	}
 
+	/**
+	 * Sets field extra CSS class
+	 * @param string $val CSS class
+	 */
 	public function setClass( $val )
 	{
 		$this->_class = $val;
 		return $this;
 	}
 
+	/**
+	 * Sets field default value
+	 * @param mixed $val Default value
+	 */
 	public function setDefault( $val )
 	{
 		$this->_default = $this->sanitize( $val );
 		return $this;
 	}
 
+	/**
+	 * Retrieve Field default value
+	 * @return mixed Default value
+	 */
 	public function getDefault()
 	{
 		return $this->_default;
 	}
 
+	/**
+	 * Sets field value
+	 * @param mixed $val Field Value
+	 */
 	public function setValue( $val )
 	{
 		$this->_value = is_null( $val ) ? null : $this->sanitize( $val );
 		return $this;
 	}
 
+	/**
+	 * Retrieve field value
+	 * @return mixed Value
+	 */
 	public function getValue()
 	{
 		return $this->_value;
 	}
 
+	/**
+	 * Sets Field name parameter
+	 * @param string $val Field name
+	 */
 	public function setName( $val )
 	{
 		$this->_name = esc_attr( $val );
 		return $this;
 	}
 
+	/**
+	 * Retrieve Field name
+	 * @param string $val Field name
+	 */
 	public function getName()
 	{
 		return esc_attr( $this->_name );
 	}
 
+	/**
+	 * Sets Field sanitize function. Possible values: email, title, url, html_class, user, js, html, attribute, int, bool, float, textarea, color.
+	 * @param string $val Sunitize function
+	 */
 	public function setSanitize( $val )
 	{
 		$this->_sanitize = $val;
 		return $this;
 	}
 
+	/**
+	 * Retrieve Field sanitize parameter
+	 * @return string Sanitize
+	 */
 	public function getSanitize()
 	{
 		return $this->_sanitize;
 	}
 
+	/**
+	 * Get field show dependencies
+	 * @return array Dependencies
+	 */
 	public function getDepend()
 	{
 		return $this->_depend;
 	}
 
+	/**
+	 * Sets field show dependencies
+	 * @param array $val Dependencies
+	 */
 	public function setDepend( $val )
 	{
 		$this->_depend = $val;
 		return $this;
 	}
 
+	/**
+	 * Sets Field parent object
+	 * @param object|null $val Parent object inctance
+	 */
 	public function setParent( $val )
 	{
 		$this->_parent = $val;
 		return $this;
 	}
 
+	/**
+	 * Retrieve parent object instance
+	 * @return Object Paren object
+	 */
 	public function getParent()
 	{
 		return $this->_parent;
 	}
 
+	/**
+	 * Sanitize field value
+	 * @param  mixed $val Field value
+	 */
 	public function sanitize( $val )
 	{
 		switch ( $this->_sanitize ) {
@@ -239,6 +383,11 @@ abstract class Field extends Abstractive
 		}
 	}
 
+	/**
+	 * Retrieve input HTML name attribute
+	 * @param  Object $parent Field paren object
+	 * @return string         Field name attribute
+	 */
 	public function getInputName( $parent = null )
 	{
 		$input_name = '';
@@ -258,6 +407,11 @@ abstract class Field extends Abstractive
 		return esc_attr( $input_name );
 	}
 
+	/**
+	 * Retrieve input HTML id attribute
+	 * @param  Object $parent Field paren object
+	 * @return string         Field id attribute
+	 */
 	public function getInputId( $parent = null )
 	{
 		$input_name = '';
@@ -277,6 +431,11 @@ abstract class Field extends Abstractive
 		return esc_attr( $input_name );
 	}
 
+	/**
+	 * Retrieve input nesting path
+	 * @param  Object $parent Field paren object
+	 * @return string         Field nesting path
+	 */
 	public function getInputPath( $parent = null )
 	{
 		$input_name = '';
@@ -296,6 +455,10 @@ abstract class Field extends Abstractive
 		return esc_attr( $input_name );
 	}
 
+	/**
+	 * Retrieve Field dependencies list
+	 * @return array Dependencies
+	 */
 	public function getDependecies()
 	{
 		if ( $this->_depend ) {
@@ -312,5 +475,8 @@ abstract class Field extends Abstractive
 		return $dependencies;
 	}
 
+	/**
+	 * Render Field HTML code
+	 */
 	abstract public function render();
 }

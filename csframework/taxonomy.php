@@ -58,7 +58,7 @@ class Taxonomy extends Base
 	}
 
 	/**
-	 * Retrive an instance of class
+	 * Retrieve an instance of class
 	 * @return csframework\Taxonomy
 	 */
 	public static function getInstance()
@@ -110,7 +110,7 @@ class Taxonomy extends Base
 	}
 
 	/**
-	 * Retrive Taxonomy slug
+	 * Retrieve Taxonomy slug
 	 * @return string
 	 */
 	public function getSlug()
@@ -119,7 +119,7 @@ class Taxonomy extends Base
 	}
 
 	/**
-	 * Retrive Taxonomy slug. Used by some fields
+	 * Retrieve Taxonomy slug. Used by some fields
 	 * @return string
 	 */
 	public function getName()
@@ -153,7 +153,7 @@ class Taxonomy extends Base
 	}
 
 	/**
-	 * Retrive taxonomy field by name
+	 * Retrieve taxonomy field by name
 	 * @param string $name Field name
 	 * @return object|false
 	 */
@@ -163,7 +163,7 @@ class Taxonomy extends Base
 	}
 
 	/**
-	 * Retrive taxonomy field value by name
+	 * Retrieve taxonomy field value by name
 	 * @param string $name Field name
 	 * @return mixed
 	 */
