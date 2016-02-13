@@ -40,9 +40,9 @@ class Csframework
 		require_once __DIR__ . '/autoloader.php';
 		$this->_autoloader = new Autoloader;
 		add_action( 'wp_ajax_file', array( $this, 'ajaxFile' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'addAssets' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'addAdminAssets' ) );
-		add_action( 'login_enqueue_scripts', array( $this, 'addLoginAssets' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'addAssets' ), 10 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'addAdminAssets' ), 10 );
+		add_action( 'login_enqueue_scripts', array( $this, 'addLoginAssets' ), 10 );
 	}
 	private function __clone()
 	{
@@ -185,7 +185,7 @@ class Csframework
 					if ( is_file( $dir . 'taxonomy/' . $entry ) ) {
 						$class_name =  $this->getNamespace() . '\Taxonomy' . ucfirst( basename( $entry, '.php' ) );
 						if ( class_exists( $class_name ) ) {
-							$class_name::getInstance()->setApp( $this );
+							$class_name::getInstance()->setApp( $this )->addFields();
 						}
 					}
 				}
@@ -209,6 +209,9 @@ class Csframework
 						$class_name = $this->getNamespace() . '\Posttype' . ucfirst( basename( $entry, '.php' ) );
 						if ( class_exists( $class_name ) ) {
 							$class_name::getInstance()->setApp( $this );
+							if ( is_admin() ) {
+								$class_name::getInstance()->addMetaboxes();
+							}
 						}
 					}
 				}
@@ -262,10 +265,28 @@ class Csframework
 	 * 7. csframework-wysiwyg-field: WYSIWYG field functionality.
 	 * ===
 	 * Override this function in your class to enqueue scripts and styles on frontend.
-	 * Don't forget do parent::addScript();
+	 * Don't forget do parent::addAssets();
 	 */
 	public function addAssets()
 	{
+		wp_register_style(
+			'csframework-jquery-ui-theme',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/css/jquery-ui.theme.min.css',
+			array(),
+			'1.11.4'
+		);
+		wp_register_style(
+			'csframework-jquery-ui-structure',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/css/jquery-ui.structure.min.css',
+			array(),
+			'1.11.4'
+		);
+		wp_register_style(
+			'csframework-jquery-ui',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/css/jquery-ui.min.css',
+			array( 'csframework-jquery-ui-theme', 'csframework-jquery-ui-structure' ),
+			'1.11.4'
+		);
 		wp_register_script(
 			'csframework-ajax-form',
 			CSFRAMEWORK_PLUGIN_URL . 'assets/js/ajax-form.js',
@@ -283,7 +304,7 @@ class Csframework
 		wp_register_script(
 			'csframework-date-field',
 			CSFRAMEWORK_PLUGIN_URL . 'assets/js/date.js',
-			array( 'jquery' ),
+			array( 'jquery', 'jquery-ui-datepicker' ),
 			'1.0.0',
 			true
 		);
@@ -335,7 +356,7 @@ class Csframework
 
 	/**
 	 * Override this function in your class to enqueue scripts and styles on backend.
-	 * Don't forget do parent::addAdminScript();
+	 * Don't forget do parent::addAdminAssets();
 	 */
 	public function addAdminAssets() {
 		$this->addAssets();
@@ -343,7 +364,7 @@ class Csframework
 
 	/**
 	 * Override this function in your class to enqueue scripts and styles on login page.
-	 * Don't forget do parent::addLoginScript();
+	 * Don't forget do parent::addLoginAssets();
 	 */
 	public function addLoginAssets() {
 		$this->addAssets();

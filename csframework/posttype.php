@@ -4,7 +4,7 @@ namespace csframework;
  * Makes it easy to create new custom post types
  * and add custom fields to it.
  */
-class Posttype extends Base
+class Posttype
 {
 	/**
 	 * Post type slug
@@ -42,6 +42,9 @@ class Posttype extends Base
 			self::$post_type = $slug;
 			add_action( 'save_post', array( $this, 'onSave' ) );
 		}
+		add_action( 'wp_enqueue_scripts', array( $this, 'addAssets' ), 100 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'addAdminAssets' ), 100 );
+		add_action( 'login_enqueue_scripts', array( $this, 'addLoginAssets' ), 100 );
 	}
 	private function __clone()
 	{
@@ -116,6 +119,12 @@ class Posttype extends Base
 	}
 
 	/**
+	 * Override this function to add extra meta boxes and fields with addMetabox() function
+	 * Attention: Metaboxes are creates only on backend
+	 */
+	public function addMetaboxes() {}
+
+	/**
 	 * Retrieve the Post type metabox by slug
 	 * @param string $slug
 	 * @return csframeworkPosttypeMetabox|false
@@ -177,4 +186,22 @@ class Posttype extends Base
 		}
 		return;
 	}
+
+	/**
+	 * Override this function in your class to enqueue scripts and styles on frontend.
+	 * Don't forget do parent::addAssets();
+	 */
+	public function addAssets() {}
+
+	/**
+	 * Override this function in your class to enqueue scripts and styles on backend.
+	 * Don't forget do parent::addAdminAssets();
+	 */
+	public function addAdminAssets() {}
+
+	/**
+	 * Override this function in your class to enqueue scripts and styles on login page.
+	 * Don't forget do parent::addLoginAssets();
+	 */
+	public function addLoginAssets() {}
 }

@@ -199,13 +199,13 @@ abstract class Widget extends \WP_Widget
 
 	/**
 	 * Override this function to your widget class to enqueue scripts and styles on frontend.
-	 * Don't forget do parent::addScript();
+	 * Don't forget do parent::addAssets();
 	 */
 	public function addAssets() {}
 
 	/**
 	 * Override this function to your widget class to enqueue scripts and styles on backend.
-	 * Don't forget do parent::addAdminScript();
+	 * Don't forget do parent::addAdminAssets();
 	 */
 	public function addAdminAssets() {
 		wp_enqueue_script( 'csframework-upload' );
@@ -213,7 +213,7 @@ abstract class Widget extends \WP_Widget
 
 	/**
 	 * Override this function to your widget class to enqueue scripts and styles on login page.
-	 * Don't forget do parent::addLoginScript();
+	 * Don't forget do parent::addLoginAssets();
 	 */
 	public function addLoginAssets() {}
 

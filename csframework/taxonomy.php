@@ -10,7 +10,7 @@ namespace csframework;
  * @param string $object_type Post type slug for which you'd like to create taxonomy
  * @param array|null $args Arguments for your taxonomy
  */
-class Taxonomy extends Base
+class Taxonomy
 {
 	/**
 	 * Taxonomy slug
@@ -47,6 +47,9 @@ class Taxonomy extends Base
 		add_action( static::$taxonomy . "_add_form_fields", array( $this, 'renderAddFields' ) );
 		add_action( "create_" . static::$taxonomy, array( $this, 'onSave' ) );
 		add_action( "edit_" . static::$taxonomy, array( $this, 'onSave' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'addAssets' ), 100 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'addAdminAssets' ), 100 );
+		add_action( 'login_enqueue_scripts', array( $this, 'addLoginAssets' ), 100 );
 	}
 	private function __clone()
 	{
@@ -136,10 +139,10 @@ class Taxonomy extends Base
 	{
 		if ( is_array( $args ) ) {
 			if ( isset( $args['type'] ) ) {
-				$field_class = 'coolamenu\Field' . ucfirst($args['type']);
+				$field_class = 'csframework\Field' . ucfirst( $args['type'] );
 				if ( class_exists( $field_class ) ) {
 					$args['parent'] = $this;
-					$this->_fields[$args['name']] = new $field_class( $args );
+					$this->_fields[$args['name']] = new $field_class( $this->_app, $args );
 				} else {
 					throw new \Exception( sprintf( __( "Unknown field type `%s`", $this->_app->getTextDomain() ), $args['type'] ) );
 					
@@ -188,6 +191,11 @@ class Taxonomy extends Base
 		}
 		return $this;
 	}
+
+	/**
+	 * Override this function to add extra fields with addField() function
+	 */
+	public function addFields() {}
 
 	/**
 	 * Render taxonomy form fields HTML
@@ -251,4 +259,22 @@ class Taxonomy extends Base
 			}
 		}
 	}
+
+	/**
+	 * Override this function in your class to enqueue scripts and styles on frontend.
+	 * Don't forget do parent::addAssets();
+	 */
+	public function addAssets() {}
+
+	/**
+	 * Override this function in your class to enqueue scripts and styles on backend.
+	 * Don't forget do parent::addAdminAssets();
+	 */
+	public function addAdminAssets() {}
+
+	/**
+	 * Override this function in your class to enqueue scripts and styles on login page.
+	 * Don't forget do parent::addLoginAssets();
+	 */
+	public function addLoginAssets() {}
 }

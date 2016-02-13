@@ -78,6 +78,7 @@ abstract class Field extends Base
 	function __construct( $app, $args )
 	{
 		if ( isset( $args['name'] ) && !empty( $args['name'] ) ) {
+			parent::__construct();
 			$this->_app = $app;
 			$parents = array();
 			if ( isset( $args['parent'] ) ) {
@@ -95,7 +96,7 @@ abstract class Field extends Base
 
 	/**
 	 * Override this function in your class to enqueue scripts and styles on frontend.
-	 * Don't forget do parent::addScript();
+	 * Don't forget do parent::addAssets();
 	 */
 	public function addAssets()
 	{
@@ -386,22 +387,29 @@ abstract class Field extends Base
 	/**
 	 * Retrieve input HTML name attribute
 	 * @param  Object $parent Field paren object
+	 * @param  string $sep    Field name separator. Default: null (field[hello][world]). If not null - field{$sep}hello{$sep}world
 	 * @return string         Field name attribute
 	 */
-	public function getInputName( $parent = null )
+	public function getInputName( $parent = null, $sep = null )
 	{
+		$open = '[';
+		$close = ']';
+		if ( !is_null( $sep ) ) {
+			$open = $sep;
+			$close = '';
+		}
 		$input_name = '';
 		if ( is_null( $parent ) ) {
 			$parent = $this->getParent();
-			$input_name = is_null( $parent ) ? $this->_name : '[' . $this->_name . ']';
+			$input_name = is_null( $parent ) ? $this->_name : $open . $this->_name . $close;
 		}
 		if ( method_exists( $parent, 'getParent' ) ) {
-			$input_name = $this->getInputName( $parent->getParent() ) . ( method_exists( $parent, 'getName' ) ? '[' . $parent->getName() . ']' : '' ) . '[' . ( int ) $parent->getIndex() . ']' . $input_name;
+			$input_name = $this->getInputName( $parent->getParent(), $sep ) . ( method_exists( $parent, 'getName' ) ? $open . $parent->getName() . $close : '' ) . $open . ( int ) $parent->getIndex() . $close . $input_name;
 		} else {
 			if ( method_exists( $parent, 'getIndex' ) ) {
-				$input_name = ( method_exists( $parent, 'getName' ) ? '[' . $parent->getName() . ']' : '' ) . '[' . (int) $parent->getIndex() . ']' . $input_name;
+				$input_name = ( method_exists( $parent, 'getName' ) ? $open . $parent->getName() . $close : '' ) . $open . (int) $parent->getIndex() . $close . $input_name;
 			} else {
-				$input_name = ( method_exists( $parent, 'getName' ) ? '[' . $parent->getName() . ']' : '' ) . $input_name;
+				$input_name = ( method_exists( $parent, 'getName' ) ? $open . $parent->getName() . $close : '' ) . $input_name;
 			}
 		}
 		return esc_attr( $input_name );
@@ -414,21 +422,7 @@ abstract class Field extends Base
 	 */
 	public function getInputId( $parent = null )
 	{
-		$input_name = '';
-		if ( is_null( $parent ) ) {
-			$parent = $this->getParent();
-			$input_name = is_null( $parent ) ? $this->_name : '-' . $this->_name;
-		}
-		if ( method_exists( $parent, 'getParent' ) ) {
-			$input_name = $this->getInputId( $parent->getParent() ) . '-' . ( method_exists($parent, 'getName') ? $parent->getName() . '-' : '' ) . ( int ) $parent->getIndex() . $input_name;
-		} else {
-			if ( method_exists( $parent, 'getIndex' ) ) {
-				$input_name = ( method_exists($parent, 'getName' ) ? $parent->getName() . '-' : '' ) . ( int ) $parent->getIndex() . $input_name;
-			} else {
-				$input_name = ( method_exists($parent, 'getName' ) ? $parent->getName() : '' ) . $input_name;
-			}
-		}
-		return esc_attr( $input_name );
+		return $this->getInputName( $parent, '-' );
 	}
 
 	/**
@@ -438,21 +432,7 @@ abstract class Field extends Base
 	 */
 	public function getInputPath( $parent = null )
 	{
-		$input_name = '';
-		if ( is_null( $parent ) ) {
-			$parent = $this->getParent();
-			$input_name = is_null( $parent ) ? $this->_name : '_' . $this->_name;
-		}
-		if ( method_exists( $parent, 'getParent' ) ) {
-			$input_name = $this->getInputPath( $parent->getParent() ) . '_' . ( method_exists($parent, 'getName') ? $parent->getName() . '_' : '' ) . $input_name;
-		} else {
-			if ( method_exists( $parent, 'getIndex' ) ) {
-				$input_name = ( method_exists($parent, 'getName') ? $parent->getName() . '_' : '' ) . $input_name;
-			} else {
-				$input_name = ( method_exists($parent, 'getName') ? $parent->getName() : '' ) . $input_name;
-			}
-		}
-		return esc_attr( $input_name );
+		return $this->getInputName( $parent, '_' );
 	}
 
 	/**

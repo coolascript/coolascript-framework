@@ -1,9 +1,9 @@
 <?php
 namespace csframework;
 /**
-* Text form field
+* Date form field
 */
-class FieldText extends Field
+class FieldDate extends Field
 {
 	
 	/**
@@ -17,9 +17,15 @@ class FieldText extends Field
 	}
 
 	/**
-	 * Render a field HTML
-	 * @return void
+	 * Enqueue scripts and styles.
 	 */
+	public function addAdminAssets()
+	{
+		parent::addAssets();
+		wp_enqueue_style( 'csframework-jquery-ui' );
+		wp_enqueue_script( 'csframework-date-field' );
+	}
+
 	public function render()
 	{
 		?>
@@ -27,7 +33,7 @@ class FieldText extends Field
 			<?php if ( $this->_label && $this->_show_label ): ?>
 				<label for="<?php echo esc_attr( $this->getInputId() ); ?>" class="label"><?php echo apply_filters( 'the_title', $this->_label ); ?>:</label>
 			<?php endif ?>
-			<input type="text" name="<?php echo esc_attr( $this->_app->getFieldsVar() . $this->getInputName() ); ?>" id="<?php echo esc_attr( $this->getInputId() ); ?>" value="<?php echo esc_attr( $this->_value ? $this->_value : $this->_default ); ?>" class="<?php echo esc_attr( $this->_class ); ?>" />
+			<input type="text" name="<?php echo esc_attr( $this->_app->getFieldsVar() . $this->getInputName() ); ?>" id="<?php echo esc_attr( $this->getInputId() ); ?>" value="<?php echo esc_attr( $this->_value ? $this->_value : $this->_default ); ?>" class="csframework-date-field <?php echo esc_attr( $this->_class ); ?>" />
 			<?php if ( $this->_description ): ?>
 				<?php echo apply_filters( 'the_content', $this->_description ); ?>
 			<?php endif ?>
