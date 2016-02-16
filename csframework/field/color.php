@@ -1,53 +1,45 @@
 <?php
-/**
-* Color field
-*/
-
 namespace csframework;
+/**
+* Color field field
+*/
 class FieldColor extends Field
 {
 	
-	function __construct($args)
+	/**
+	 * Instantiate a class object
+	 * @param csframework\Csframework $app  App instance
+	 * @param array $args Field parameters
+	 */
+	function __construct( $app, $args )
 	{
 		$this->_sanitize = 'color';
-		parent::__construct($args);
-		$this->_addAssets();
+		parent::__construct( $app, $args );
 	}
 
-	private function _addAssets()
+	/**
+	 * Enqueue scripts and styles.
+	 */
+	public function addAdminAssets()
 	{
-		$theme = Csframework::getInstance();
-		$theme->styles->addStyle( 'theme-iris', array(
-				'url' => get_template_directory_uri() . '/assets/csframework/css/iris.min.css',
-				'ver' => '1.0.7',
-				'load' => true,
-			) );
-		$theme->scripts
-			->addScript( 'theme-iris', array(
-				'url' => get_template_directory_uri() . '/assets/csframework/js/iris.min.js',
-				'deps' => array( 'jquery-ui-draggable', 'jquery-ui-slider' ),
-				'ver' => '1.0.7',
-				'load' => false,
-			) )->addScript( 'theme-colorpicker-init', array(
-				'url' => get_template_directory_uri() . '/assets/csframework/js/colorpicker-init.js',
-				'deps' => array( 'theme-iris' ),
-				'ver' => '1.0.0',
-				'load' => true,
-			) );
+		wp_enqueue_style( 'iris' );
+		wp_enqueue_script( 'csframework-color-field' );
 	}
 
+	/**
+	 * Set acceped file type
+	 * @param string $val File type: image, audio, video, file
+	 */
 	public function render()
 	{
 		?>
-		<div class="field field-color<?php echo esc_attr( $this->_depend ? ' depend-field' : '' );  ?>"<?php echo wp_kses_post( $this->_depend ? ' data-depend="' . implode( ';', $this->getDependecies() ) . '"' : '' );  ?>>
-			<?php if ($this->_label && $this->_show_label): ?>
-				<label for="<?php echo esc_attr( $this->getInputId() ); ?>" class="label"><?php echo wp_kses_post( $this->_label ); ?>:</label>
+		<div class="csframework-field csframework-field-color<?php echo esc_attr( $this->_depend ? ' depend-field' : '' );  ?>"<?php echo ( bool ) $this->_depend ? ' data-depend="' . esc_attr( implode( ';', $this->getDependecies() ) ) . '"' : '';  ?>>
+			<?php if ( $this->_label && $this->_show_label ): ?>
+				<label for="<?php echo esc_attr( $this->getInputId() ); ?>" class="label"><?php echo apply_filters( 'the_title', $this->_label ); ?>:</label>
 			<?php endif ?>
-			<input type="text" name="<?php echo esc_attr( Csframework::getFieldsVar() . $this->getInputName() ); ?>" id="<?php echo esc_attr( $this->getInputId() ); ?>" value="<?php echo esc_attr( $this->_value ? $this->_value : $this->_default ); ?>" class="color-picker-field<?php echo esc_attr( $this->_class ? ' ' . $this->_class : '' ); ?>" />
+			<input type="text" name="<?php echo esc_attr( $this->_app->getFieldsVar() . $this->getInputName() ); ?>" id="<?php echo esc_attr( $this->getInputId() ); ?>" value="<?php echo esc_attr( $this->_value ? $this->_value : $this->_default ); ?>" class="csframework-color-field<?php echo esc_attr( $this->_class ? ' ' . $this->_class : '' ); ?>" />
 			<?php if ( $this->_description ): ?>
-				<div class="field-description">
-					<?php echo wp_kses_post( $this->_description ); ?>
-				</div>
+				<?php echo apply_filters( 'the_content', $this->_description ); ?>
 			<?php endif ?>
 		</div>
 		<?php

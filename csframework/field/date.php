@@ -26,6 +26,10 @@ class FieldDate extends Field
 		wp_enqueue_script( 'csframework-date-field' );
 	}
 
+	/**
+	 * Render a field HTML
+	 * @return void
+	 */
 	public function render()
 	{
 		?>

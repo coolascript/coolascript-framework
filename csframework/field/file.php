@@ -1,63 +1,72 @@
 <?php
-/**
-* File field
-*/
-
 namespace csframework;
+/**
+* File form field
+*/
 class FieldFile extends Field
 {
-	protected $_filetype = 'image';		// 'image', 'audio', 'video', 'file'
-	
-	function __construct( $args )
+	/**
+	 * Type of accepted file: image, audio, video, file
+	 * @var string
+	 */
+	protected $_filetype = 'image';
+
+	/**
+	 * Instantiate a class object
+	 * @param csframework\Csframework $app  App instance
+	 * @param array $args Field parameters
+	 */
+	function __construct( $app, $args )
 	{
-		parent::__construct( $args );
+		parent::__construct( $app, $args );
 		add_action( 'wp_ajax_file', array( $this, 'ajaxFile' ) );
-		$this->_addAssets();
 	}
 
-	public function reInit()
+	/**
+	 * Enqueue scripts and styles.
+	 */
+	public function addAdminAssets()
 	{
-		add_action( 'wp_ajax_file', array( $this, 'ajaxFile' ) );
+		parent::addAdminAssets();
+		wp_enqueue_media();
+		wp_enqueue_script( 'csframework-admin-upload' );
 	}
 
-	private function _addAssets()
-	{
-		$theme = Csframework::getInstance();
-		$theme->scripts
-			->setEnqueueMedia( true )
-			->addScript( 'theme-admin-upload', array(
-				'url' => get_template_directory_uri() . '/assets/csframework/js/admin-upload.js',
-				'deps' => array( 'jquery', 'media-upload', 'thickbox' ),
-				'ver' => '1.0.1',
-				'load' => true,
-				'load_check' => 'is_admin'
-			) )
-			->localizeScript( 'theme-admin-upload', 'theme_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
-	}
-
+	/**
+	 * Set acceped file type
+	 * @param string $val File type: image, audio, video, file
+	 */
 	public function setFiletype( $val )
 	{
 		$this->_filetype = ( string ) $val;
 		return $this;
 	}
 
+	/**
+	 * Retriev accepted file type
+	 * @return string file type
+	 */
 	public function getFiletype()
 	{
 		return $this->_filetype;
 	}
 
+	/**
+	 * Render a field HTML
+	 * @return void
+	 */
 	public function render()
 	{
 		$upload_link = esc_url( get_upload_iframe_src( $this->_filetype, null, 'type' ) );
 		$file_src = wp_get_attachment_url( $this->_value );
 		$have_file = !empty( $file_src );
 		?>
-		<div class="field field-file<?php echo esc_attr( $this->_depend ? ' depend-field' : '' );  ?>"<?php echo wp_kses_post( $this->_depend ? ' data-depend="' . implode( ';', $this->getDependecies() ) . '"' : '' );  ?>>
-			<div class="file-field" data-type="<?php echo esc_attr( $this->_filetype ); ?>">
+		<div class="csframework-field csframework-field-file<?php echo esc_attr( $this->_depend ? ' depend-field' : '' );  ?>"<?php echo ( bool ) $this->_depend ? ' data-depend="' . esc_attr( implode( ';', $this->getDependecies() ) ) . '"' : '';  ?>>
+			<div class="csframework-file-field" data-type="<?php echo esc_attr( $this->_filetype ); ?>">
 				<?php if ( $this->_label && $this->_show_label ): ?>
-					<h5 class="label"><?php echo wp_kses_post( $this->_label ); ?>:</h5>
+					<h5 class="csframework-label"><?php echo apply_filters( 'the_title', $this->_label ); ?>:</h5>
 				<?php endif ?>
-				<div class="file-container">
+				<div class="csframework-file-container">
 					<?php if ( $have_file ) {
 						switch ( $this->_filetype ) {
 							case 'image':
@@ -83,23 +92,23 @@ class FieldFile extends Field
 								echo wp_get_attachment_image( $this->_value, array( 75, 75 ) );
 								?>
 								<span class="dashicons dashicons-media-default"></span>
-								<span class="file-name"><?php echo wp_kses_post( $filename ); ?></span>
+								<span class="file-name"><?php echo apply_filters( 'the_content', $filename ); ?></span>
 								<?php
 								break;
 						}
 					} 
 					?>
 				</div>
-				<div class="file-error error-filetype hidden"><?php _e( 'Wrong file type', Csframework::getTextDomain() ) ?></div>
+				<div class="file-error error-filetype hidden"><?php _e( 'Wrong file type', 'csframework' ) ?></div>
 				<p class="hide-if-no-js">
 					<a class="button add-file<?php echo esc_attr( $have_file ? ' hidden' : '' ); ?>" href="<?php echo esc_url( $upload_link ); ?>">
-						<?php _e( 'Set file', Csframework::getTextDomain() ) ?>
+						<?php _e( 'Set file', 'csframework' ) ?>
 					</a>
 					<a class="button delete-file<?php echo ! $have_file ? ' hidden' : '' ?>" href="#">
-						<?php _e( 'Remove file', Csframework::getTextDomain() ) ?>
+						<?php _e( 'Remove file', 'csframework' ) ?>
 					</a>
 				</p>
-				<input class="file-id<?php echo esc_attr( $this->_class ? ' ' . $this->_class : '' ); ?>" id="<?php echo esc_attr( $this->getInputId() ); ?>" name="<?php echo esc_attr( Csframework::getFieldsVar() . $this->getInputName() ); ?>" type="hidden" value="<?php echo esc_attr( $this->_value ); ?>" />
+				<input class="file-id<?php echo esc_attr( $this->_class ? ' ' . $this->_class : '' ); ?>" id="<?php echo esc_attr( $this->getInputId() ); ?>" name="<?php echo esc_attr( $this->_app->getFieldsVar() . $this->getInputName() ); ?>" type="hidden" value="<?php echo esc_attr( $this->_value ); ?>" />
 				<?php if ( $this->_description ): ?>
 					<div class="field-description">
 						<?php echo wp_kses_post( $this->_description ); ?>
@@ -110,6 +119,9 @@ class FieldFile extends Field
 		<?php
 	}
 
+	/**
+	 * Ajax action on file uploaded
+	 */
 	public function ajaxFile()
 	{
 		$type = $_POST['type'];

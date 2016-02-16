@@ -287,6 +287,12 @@ class Csframework
 			array( 'csframework-jquery-ui-theme', 'csframework-jquery-ui-structure' ),
 			'1.11.4'
 		);
+		wp_register_style(
+			'iris',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/css/iris.min.css',
+			array(),
+			'1.0.7'
+		);
 		wp_register_script(
 			'csframework-ajax-form',
 			CSFRAMEWORK_PLUGIN_URL . 'assets/js/ajax-form.js',
@@ -343,14 +349,6 @@ class Csframework
 			'1.0.0',
 			true
 		);
-		wp_register_script(
-			'csframework-upload',
-			CSFRAMEWORK_PLUGIN_URL . 'assets/js/upload.js',
-			array( 'jquery', 'media-upload', 'thickbox' ),
-			'1.0.1',
-			true
-		);
-		wp_localize_script( 'csframework-upload', 'csframework', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
 
 	}
 
@@ -360,6 +358,14 @@ class Csframework
 	 */
 	public function addAdminAssets() {
 		$this->addAssets();
+		wp_register_script(
+			'csframework-admin-upload',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/admin-upload.js',
+			array( 'jquery', 'media-upload', 'thickbox' ),
+			'1.0.1',
+			true
+		);
+		wp_localize_script( 'csframework-upload', 'csframework', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
 	}
 
 	/**

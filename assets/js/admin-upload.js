@@ -1,14 +1,14 @@
-(function ($) {
+( function ( $ ) {
 	var frame;
-	$(document)
-		.on( 'click', '.file-field .add-file', function( event ){
+	$( document )
+		.on( 'click', '.csframework-file-field .add-file', function( event ){
 
 			event.preventDefault();
 
-			var addFileLink = $(this),
-				fieldBlock = addFileLink.parent().parent( ".file-field" ),
-				delFileLink = fieldBlock.find( '.delete-file'),
-				fileContainer = fieldBlock.find( '.file-container'),
+			var addFileLink = $( this ),
+				fieldBlock = addFileLink.parent().parent( ".csframework-file-field" ),
+				delFileLink = fieldBlock.find( '.delete-file' ),
+				fileContainer = fieldBlock.find( '.csframework-file-container' ),
 				fileIdInput = fieldBlock.find( '.file-id' ),
 				type = fieldBlock.data( 'type' );
 
@@ -18,16 +18,16 @@
 			}
 
 			// Create a new media frame
-			frame = wp.media({
+			frame = wp.media( {
 				multiple: false  // Set to true to allow multiple files to be selected
-			});
+			} );
 
 
 			// When an image is selected in the media frame...
 			frame.on( 'select', function() {
 
 				// Get media attachment details from the frame state
-				var attachment = frame.state().get('selection').first().toJSON();
+				var attachment = frame.state().get( 'selection' ).first().toJSON();
 				if ( type == 'file' || attachment.type == type ) {
 					$( '.error-filetype', fieldBlock ).slideUp( 300 );
 
@@ -38,7 +38,7 @@
 							break;
 
 						default:
-							$.ajax({
+							$.ajax( {
 								dataType: 'html',
 								method: 'post',
 								url: csframework.url,
@@ -47,11 +47,11 @@
 									type: type,
 									id: attachment.id
 								},
-								success: function (data) {
+								success: function ( data ) {
 									fileContainer.html( data );
-									$('.wp-audio-shortcode, .wp-video-shortcode', fieldBlock).mediaelementplayer();
+									$( '.wp-audio-shortcode, .wp-video-shortcode', fieldBlock ).mediaelementplayer();
 								}
-							});
+							} );
 							break;
 					}
 
@@ -72,14 +72,14 @@
 			// Finally, open the modal on click
 			frame.open();
 		})
-		.on( 'click', '.file-field .delete-file', function( event ){
+		.on( 'click', '.csframework-file-field .delete-file', function( event ){
 
 			event.preventDefault();
 
 			var delFileLink = $(this),
-				fieldBlock = delFileLink.parent().parent( ".file-field" ),
+				fieldBlock = delFileLink.parent().parent( ".csframework-file-field" ),
 				addFileLink = fieldBlock.find( '.add-file'),
-				fileContainer = fieldBlock.find( '.file-container'),
+				fileContainer = fieldBlock.find( '.csframework-file-container'),
 				fileIdInput = fieldBlock.find( '.file-id' );
 
 			// Clear out the preview image
@@ -94,5 +94,5 @@
 			// Delete the image id from the hidden input
 			fileIdInput.val( '' );
 
-		});
-})(jQuery)
+		} );
+} )( jQuery )
