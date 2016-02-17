@@ -342,13 +342,13 @@ class Csframework
 			'1.0.0',
 			true
 		);
-		wp_register_script(
+		/*wp_register_script(
 			'csframework-wysiwyg-field',
 			CSFRAMEWORK_PLUGIN_URL . 'assets/js/wysiwyg.js',
-			array( 'jquery' ),
+			array( 'jquery', 'editor' ),
 			'1.0.0',
 			true
-		);
+		);*/
 
 	}
 

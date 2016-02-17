@@ -1,47 +1,47 @@
 <?php
-/**
-* WYSIWYG field
-*/
-
 namespace csframework;
+/**
+* WYSIWYG form field
+*/
 class FieldWysiwyg extends Field
 {
 	
-	function __construct($args)
+	/**
+	 * Instantiate a class object
+	 * @param csframework\Csframework $app  App instance
+	 * @param array $args Field parameters
+	 */
+	function __construct( $app, $args )
 	{
 		$this->setSanitize( 'textarea' );
-		parent::__construct($args);
-		$this->_addAssets();
+		parent::__construct( $app, $args );
 	}
 
-	private function _addAssets()
+	/**
+	 * Enqueue scripts and styles.
+	 */
+	public function addAdminAssets()
 	{
-		$theme = Csframework::getInstance();
-		$theme->scripts
-			->addScript( 'theme-wysiwyg', array(
-				'url' => get_template_directory_uri() . '/assets/csframework/js/wysiwyg.js',
-				'deps' => array( 'editor' ),
-				'ver' => '1.0.0',
-				'load' => true,
-				'load_check' => 'is_admin',
-			) );
+		//wp_enqueue_script( 'csframework-wysiwyg-field' );
 	}
 
+	/**
+	 * Render a field HTML
+	 * @return void
+	 */
 	public function render()
 	{
 		?>
-		<div class="field field-wysiwyg<?php echo esc_attr( $this->_depend ? ' depend-field' : '' );  ?>"<?php echo wp_kses_post( $this->_depend ? ' data-depend="' . implode( ';', $this->getDependecies() ) . '"' : '' );  ?>>
-			<?php if ($this->_label && $this->_show_label): ?>
-				<label for="<?php echo esc_attr( $this->getInputId() ); ?>" class="label"><?php echo wp_kses_post( $this->_label ); ?>:</label>
+		<div class="csframework-field csframework-field-wysiwyg<?php echo esc_attr( $this->_depend ? ' depend-field' : '' );  ?>"<?php echo ( bool ) $this->_depend ? ' data-depend="' . esc_attr( implode( ';', $this->getDependecies() ) ) . '"' : '';  ?>>
+			<?php if ( $this->_label && $this->_show_label ): ?>
+				<label for="<?php echo esc_attr( $this->getInputId() ); ?>" class="label"><?php echo apply_filters( 'the_title', $this->_label ); ?>:</label>
 			<?php endif ?>
-
-			<div class="wp-editor-container">
-				<textarea name="<?php echo esc_attr( Csframework::getFieldsVar() . $this->getInputName() ); ?>" id="<?php echo esc_attr( $this->getInputId() ); ?>" class="<?php echo esc_attr( $this->_class ); ?> wysiwyg-field"><?php echo esc_textarea( $this->_value ? $this->_value : $this->_default ); ?></textarea>
-			</div>
+			<?php wp_editor( $this->_value ? $this->_value : $this->_default, $this->getInputId() ) ?>
+			<!-- <div class="wp-editor-container">
+				<textarea name="<?php echo esc_attr( $this->getInputName() ); ?>" id="<?php echo esc_attr( $this->getInputId() ); ?>" class="<?php echo esc_attr( $this->_class ); ?> csframework-wysiwyg-field"><?php echo esc_textarea( $this->_value ? $this->_value : $this->_default ); ?></textarea>
+			</div> -->
 			<?php if ( $this->_description ): ?>
-				<div class="field-description">
-					<?php echo wp_kses_post( $this->_description ); ?>
-				</div>
+				<?php echo apply_filters( 'the_content', $this->_description ); ?>
 			<?php endif ?>
 		</div>
 		<?php

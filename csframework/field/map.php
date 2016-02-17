@@ -1,36 +1,52 @@
 <?php
-/**
-* Text field
-*/
-
 namespace csframework;
+/**
+* Map markers field
+* Free until exceeding 25,000 map loads per 24 hours for 90 consecutive days
+*/
 class FieldMap extends Field
 {
+	/**
+	 * Google maps API key
+	 * @var string
+	 */
+	protected $_gmaps_api_key = '***';
 	
-	function __construct($args)
+	/**
+	 * Instantiate a class object
+	 * @param csframework\Csframework $app  App instance
+	 * @param array $args Field parameters
+	 */
+	function __construct( $app, $args )
 	{
-		parent::__construct($args);
-		$this->_addAssets();
+		parent::__construct( $app, $args );
 	}
 
-	private function _addAssets()
+	/**
+	 * Enqueue scripts and styles.
+	 */
+	public function addAdminAssets()
 	{
-		$theme = Csframework::getInstance();
-		$theme->scripts
-			->addScript( 'theme-maps-api', array(
-				'url' => 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDUO7A6BxRJdyXzbqpNymLiHWu_-C0UKEk',
-				'load' => false,
-				'load_check' => 'is_admin',
-				'in_footer' => false,
-			) )
-			->addScript( 'theme-map-field', array(
-				'url' => get_template_directory_uri() . '/assets/csframework/js/map.js',
-				'deps' => array( 'theme-maps-api' ),
-				'load' => true,
-				'load_check' => 'is_admin',
-			) );
+		wp_register_script(
+			'csframework-google-maps-api',
+			'https://maps.googleapis.com/maps/api/js?key=' . $this->_gmaps_api_key,
+			array(),
+			'1',
+			true,
+		);
+		wp_enqueue_script(
+			'csframework-map-field',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/map.js',
+			array( 'csframework-google-maps-api' ),
+			'1.0.0'
+			true
+		);
 	}
 
+	/**
+	 * Render a field HTML
+	 * @return void
+	 */
 	public function render()
 	{
 		?>

@@ -1,29 +1,35 @@
 <?php
-/**
-* Email field
-*/
-
 namespace csframework;
+/**
+* Email form field
+*/
 class FieldEmail extends Field
 {
 	
-	function __construct($args)
+	/**
+	 * Instantiate a class object
+	 * @param csframework\Csframework $app  App instance
+	 * @param array $args Field parameters
+	 */
+	function __construct( $app, $args )
 	{
-		parent::__construct($args);
+		parent::__construct( $app, $args );
 	}
 
+	/**
+	 * Render a field HTML
+	 * @return void
+	 */
 	public function render()
 	{
 		?>
-		<div class="field field-email<?php echo esc_attr( $this->_depend ? ' depend-field' : '' );  ?>"<?php echo wp_kses_post( $this->_depend ? ' data-depend="' . implode( ';', $this->getDependecies() ) . '"' : '' );  ?>>
-			<?php if ($this->_label && $this->_show_label): ?>
-				<label for="<?php echo esc_attr( $this->getInputId() ); ?>" class="label"><?php echo wp_kses_post( $this->_label ); ?>:</label>
+		<div class="csframework-field csframework-field-email<?php echo esc_attr( $this->_depend ? ' depend-field' : '' );  ?>"<?php echo ( bool ) $this->_depend ? ' data-depend="' . esc_attr( implode( ';', $this->getDependecies() ) ) . '"' : '';  ?>>
+			<?php if ( $this->_label && $this->_show_label ): ?>
+				<label for="<?php echo esc_attr( $this->getInputId() ); ?>" class="label"><?php echo apply_filters( 'the_title', $this->_label ); ?>:</label>
 			<?php endif ?>
-			<input type="email" name="<?php echo esc_attr( Csframework::getFieldsVar() . $this->getInputName() ); ?>" id="<?php echo esc_attr( $this->getInputId() ); ?>" value="<?php echo esc_attr( $this->_value ? $this->_value : $this->_default ); ?>" class="<?php echo esc_attr( $this->_class ); ?>" />
+			<input type="email" name="<?php echo esc_attr( $this->getInputName() ); ?>" id="<?php echo esc_attr( $this->getInputId() ); ?>" value="<?php echo esc_attr( $this->_value ? $this->_value : $this->_default ); ?>" class="<?php echo esc_attr( $this->_class ); ?>" />
 			<?php if ( $this->_description ): ?>
-				<div class="field-description">
-					<?php echo wp_kses_post( $this->_description ); ?>
-				</div>
+				<?php echo apply_filters( 'the_content', $this->_description ); ?>
 			<?php endif ?>
 		</div>
 		<?php

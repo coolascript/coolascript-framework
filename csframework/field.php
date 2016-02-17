@@ -412,7 +412,7 @@ abstract class Field extends Base
 				$input_name = ( method_exists( $parent, 'getName' ) ? $open . $parent->getName() . $close : '' ) . $input_name;
 			}
 		}
-		return esc_attr( $input_name );
+		return esc_attr( $this->_app->getFieldsVar() . $input_name );
 	}
 
 	/**

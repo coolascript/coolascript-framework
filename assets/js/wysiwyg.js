@@ -1,11 +1,12 @@
 ( function ( $ ) {
 	$( function () {
 		if ( typeof tinymce != 'undefined' ) {
-			tinymce.init({
+			console.log('text');
+			tinymce.init( {
 				selector: ".csframework-wysiwyg-field",
 				menubar : false,
 				plugins: "image",
-			});
+			} );
 		}
 	} )
 } )( jQuery )

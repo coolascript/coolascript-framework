@@ -28,7 +28,7 @@ class FieldTextarea extends Field
 			<?php if ( $this->_label && $this->_show_label ): ?>
 				<label for="<?php echo esc_attr( $this->getInputId() ); ?>" class="label"><?php echo apply_filters( 'the_title', $this->_label ); ?>:</label>
 			<?php endif ?>
-			<textarea name="<?php echo esc_attr( $this->_app->getFieldsVar() . $this->getInputName() ); ?>" id="<?php echo esc_attr( $this->getInputId() ); ?>" class="<?php echo esc_attr( $this->_class ); ?>" cols="40" rows="5"><?php echo esc_textarea( $this->_value ? $this->_value : $this->_default ); ?></textarea>
+			<textarea name="<?php echo esc_attr( $this->getInputName() ); ?>" id="<?php echo esc_attr( $this->getInputId() ); ?>" class="<?php echo esc_attr( $this->_class ); ?>" cols="40" rows="5"><?php echo esc_textarea( $this->_value ? $this->_value : $this->_default ); ?></textarea>
 			<?php if ( $this->_description ): ?>
 				<?php echo apply_filters( 'the_content', $this->_description ); ?>
 			<?php endif ?>

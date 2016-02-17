@@ -51,7 +51,7 @@ class FieldMultiselect extends Field
 			<?php if ( $this->_label && $this->_show_label ): ?>
 				<label for="<?php echo esc_attr( $this->getInputId() ); ?>" class="label"><?php echo apply_filters( 'the_title', $this->_label ); ?>:</label>
 			<?php endif ?>
-			<select name="<?php echo esc_attr( $this->_app->getFieldsVar() . $this->getInputName() ); ?>[]" id="<?php echo esc_attr( $this->getInputId() ); ?>" class="<?php echo esc_attr( $this->_class ); ?>" multiple>
+			<select name="<?php echo esc_attr( $this->getInputName() ); ?>[]" id="<?php echo esc_attr( $this->getInputId() ); ?>" class="<?php echo esc_attr( $this->_class ); ?>" multiple>
 			<?php foreach ( $this->_values as $value => $label ): ?>
 				<?php if ( is_array( $label ) ): ?>
 					<optgroup label="<?php echo esc_attr( $value ); ?>">
