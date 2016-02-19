@@ -1,0 +1,12 @@
+.csframework-field-content-map {
+	height: 300px;
+	position: relative;
+}
+.csframework-field-google-map-api,
+.csframework-field-map-canvas {
+	bottom: 0;
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+}
