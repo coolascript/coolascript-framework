@@ -27,7 +27,7 @@ class FieldFieldset extends Field
 						$field['parent'] = &$this;
 						$this->_fields[$name] = new $field_class( $field );
 					} else {
-						throw new \Exception( sprintf( __( "Unknown field type `%s`", Csframework::getTextDomain() ), $field['type'] ) );
+						throw new \Exception( sprintf( __( "Unknown field type `%s`", 'csframework' ), $field['type'] ) );
 					}
 				}
 			}

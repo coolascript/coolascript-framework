@@ -63,7 +63,7 @@ class FieldMap extends Field
 				<?php endif ?>
 				<input type="hidden" name="<?php echo esc_attr( $this->getInputName() ); ?>[lat]" id="<?php echo esc_attr( $this->getInputId() ); ?>-lat" value="<?php echo esc_attr( $this->_value ? $this->_value['lat'] : $this->_default ); ?>" class="lat" />
 				<input type="hidden" name="<?php echo esc_attr( $this->getInputName() ); ?>[lng]" id="<?php echo esc_attr( $this->getInputId() ); ?>-lng" value="<?php echo esc_attr( $this->_value ? $this->_value['lng'] : $this->_default['lng'] ); ?>" class="lng" />
-				<label for="<?php echo esc_attr( $this->getInputId() ); ?>-title" class="label"><?php _e( 'Marker title', 'csframework' ); ?>:</label>
+				<label for="<?php echo esc_attr( $this->getInputId() ); ?>-title" class="label"><?php _e( 'Marker title', 'coolascript-framework' ); ?>:</label>
 				<input type="text" name="<?php echo esc_attr( $this->getInputName() ); ?>[title]" id="<?php echo esc_attr( $this->getInputId() ); ?>-title" value="<?php echo esc_attr( $this->_value ? $this->_value['title'] : $this->_default['title'] ); ?>" class="title widefat" />
 				<div class="csframework-field-content-map">
 						<div class="csframework-field-map-canvas"></div>

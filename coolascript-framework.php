@@ -6,10 +6,11 @@
  * Version: 1.0.0
  * Author: ron_013
  * Author URI: http://coolascript.com
- * Text Domain: csframework
- * Domain Path: /locale/
+ * Text Domain: coolascript-framework
+ * Domain Path: /languages
  * Network: true
  * License: GPL2
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 /*  Copyright 2015 ron_013 (email : coolascript@gmail.com)
 
@@ -26,13 +27,14 @@
 	along with this program; if not, write to the Free Software
 */
 
-defined( 'ABSPATH' ) or die( __( 'No script kiddies please!', 'coolabook' ) );
+defined( 'ABSPATH' ) or die( __( 'No script kiddies please!', 'coolascript-framework' ) );
 
 define( 'CSFRAMEWORK_VERSION', '1.0.0' );
 define( 'CSFRAMEWORK_MINIMUM_PHP_VERSION', '5.3' );
 define( 'CSFRAMEWORK_MINIMUM_WP_VERSION', '3.1' );
 define( 'CSFRAMEWORK_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'CSFRAMEWORK_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'CSFRAMEWORK_PLUGIN_BASENAME', plugin_basename( dirname( __FILE__ ) ) );
 
 if ( version_compare( PHP_VERSION, CSFRAMEWORK_MINIMUM_PHP_VERSION, '>=' ) && version_compare( $GLOBALS['wp_version'], 'CSFRAMEWORK_MINIMUM_WP_VERSION', '>=' ) ) {
 	require_once( CSFRAMEWORK_PLUGIN_DIR . 'csframework/csframework.php' );

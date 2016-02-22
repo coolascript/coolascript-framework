@@ -18,7 +18,7 @@ class Base
 	{
 		$method = 'set' . $name;
 		if ( ( 'mapper' == $name ) || !method_exists( $this, $method ) ) {
-			throw new \Exception( sprintf( __( "Unknown class method `%s`", 'csframework' ), $method ) );
+			throw new \Exception( sprintf( __( "Unknown class method `%s`", 'coolascript-framework' ), $method ) );
 		}
 		$this->$method( $value );
 	}
@@ -26,7 +26,7 @@ class Base
 	{
 		$method = 'get' . $name;
 		if ( ( 'mapper' == $name ) || !method_exists( $this, $method ) ) {
-			throw new \Exception( sprintf( __( "Unknown class method `%s`", 'csframework' ), $method ) );
+			throw new \Exception( sprintf( __( "Unknown class method `%s`", 'coolascript-framework' ), $method ) );
 		}
 		return $this->$method();
 	}

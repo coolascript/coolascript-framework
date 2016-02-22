@@ -31,7 +31,7 @@ class Autoloader
 	{
 		$method = 'set' . $name;
 		if ( !method_exists( $this, $method ) ) {
-			throw new \Exception( sprintf( __( "csframework\Autoloader: Invalid property `%s`.", 'csframework' ), $name ) );
+			throw new \Exception( sprintf( __( "csframework\Autoloader: Invalid property `%s`.", 'coolascript-framework' ), $name ) );
 		}
 		$this->$method( $value );
 	}
@@ -40,7 +40,7 @@ class Autoloader
 	{
 		$method = 'get' . $name;
 		if ( !method_exists( $this, $method ) ) {
-			throw new \Exception( sprintf( __( "csframework\Autoloader: Invalid property `%s`.", 'csframework' ), $name ) );
+			throw new \Exception( sprintf( __( "csframework\Autoloader: Invalid property `%s`.", 'coolascript-framework' ), $name ) );
 		}
 		return $this->$method();
 	}
@@ -86,7 +86,7 @@ class Autoloader
 		if ( !isset( $this->_includePath[$handle] ) ) {
 			$this->_includePath[$handle] = $includePath;
 		} else {
-			throw new \Exception( sprintf( __( "csframework\Autoloader: Path with handle `%s` allready exist.", 'csframework' ), $handle ) );
+			throw new \Exception( sprintf( __( "csframework\Autoloader: Path with handle `%s` allready exist.", 'coolascript-framework' ), $handle ) );
 		}
 		return $this;
 	}
@@ -101,7 +101,7 @@ class Autoloader
 		if ( isset( $this->_includePath[$handle] ) && $handle != self::$sysPath ) {
 			unset( $this->_includePath[$handle] );
 		} else {
-			throw new \Exception( sprintf( __( "csframework\Autoloader: You cant remove `%s` path as it does not exist or reserved by system.", 'csframework' ), $handle ) );
+			throw new \Exception( sprintf( __( "csframework\Autoloader: You cant remove `%s` path as it does not exist or reserved by system.", 'coolascript-framework' ), $handle ) );
 		}
 		return $this;
 	}

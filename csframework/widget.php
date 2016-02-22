@@ -168,13 +168,13 @@ abstract class Widget extends \WP_Widget
 							} 
 							?>
 						</div>
-						<div class="file-error error-filetype hidden"><?php _e( 'Wrong file type', 'csframework' ) ?></div>
+						<div class="file-error error-filetype hidden"><?php _e( 'Wrong file type', 'coolascript-framework' ) ?></div>
 						<p class="hide-if-no-js">
 							<a class="button add-file<?php echo esc_attr( $have_file ? ' hidden' : '' ); ?>" href="<?php echo esc_url( $upload_link ); ?>">
-								<?php _e( 'Set file', 'csframework' ) ?>
+								<?php _e( 'Set file', 'coolascript-framework' ) ?>
 							</a>
 							<a class="button delete-file<?php echo ! $have_file ? ' hidden' : '' ?>" href="#">
-								<?php _e( 'Remove file', 'csframework' ) ?>
+								<?php _e( 'Remove file', 'coolascript-framework' ) ?>
 							</a>
 						</p>
 						<input class="file-id" id="<?php echo esc_attr( $this->get_field_id( $name ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $name ) ); ?>" type="hidden" value="<?php echo esc_attr( $value ); ?>" />

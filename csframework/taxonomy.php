@@ -144,7 +144,7 @@ class Taxonomy
 					$args['parent'] = $this;
 					$this->_fields[$args['name']] = new $field_class( $this->_app, $args );
 				} else {
-					throw new \Exception( sprintf( __( "Unknown field type `%s`", $this->_app->getTextDomain() ), $args['type'] ) );
+					throw new \Exception( sprintf( __( "Unknown field type `%s`", 'coolascript-framework' ), $args['type'] ) );
 					
 				}
 			}
