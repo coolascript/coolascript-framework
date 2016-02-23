@@ -1,0 +1,11 @@
+.csframework-sortable-row-controls {
+	left: 0;
+	position: absolute;
+	top: 15px;
+}
+.csframework-sortable-row-controls + .field-row {
+	overflow: hidden;
+}
+.csframework-sortable-handler {
+	width: auto;
+}

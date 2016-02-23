@@ -398,6 +398,7 @@ abstract class Field extends Base
 			$open = $sep;
 			$close = '';
 		}
+		$addBase = true;
 		$input_name = '';
 		if ( is_null( $parent ) ) {
 			$parent = $this->getParent();
@@ -405,6 +406,7 @@ abstract class Field extends Base
 		}
 		if ( method_exists( $parent, 'getParent' ) ) {
 			$input_name = $this->getInputName( $parent->getParent(), $sep ) . ( method_exists( $parent, 'getName' ) ? $open . $parent->getName() . $close : '' ) . $open . ( int ) $parent->getIndex() . $close . $input_name;
+			$addBase = false;
 		} else {
 			if ( method_exists( $parent, 'getIndex' ) ) {
 				$input_name = ( method_exists( $parent, 'getName' ) ? $open . $parent->getName() . $close : '' ) . $open . (int) $parent->getIndex() . $close . $input_name;
@@ -412,7 +414,7 @@ abstract class Field extends Base
 				$input_name = ( method_exists( $parent, 'getName' ) ? $open . $parent->getName() . $close : '' ) . $input_name;
 			}
 		}
-		return esc_attr( $this->_app->getFieldsVar() . $input_name );
+		return esc_attr( ( $addBase ? $this->_app->getFieldsVar() : '' ) . $input_name );
 	}
 
 	/**

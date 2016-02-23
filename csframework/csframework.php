@@ -277,6 +277,18 @@ class Csframework
 			array(),
 			'1.0.7'
 		);
+		wp_register_style(
+			'csframework-sortable-field',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/css/sortable.css',
+			array(),
+			'1.0.0'
+		);
+		wp_register_style(
+			'csframework-repeatable-field',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/css/repeatable.css',
+			array( 'csframework-sortable-field' ),
+			'1.0.0'
+		);
 		wp_register_script(
 			'csframework-ajax-form',
 			CSFRAMEWORK_PLUGIN_URL . 'assets/js/ajax-form.js',
@@ -285,9 +297,16 @@ class Csframework
 			true
 		);
 		wp_register_script(
+			'csframework-sortable-field',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/sortable.js',
+			array( 'jquery', 'jquery-ui-core', 'jquery-ui-draggable', 'jquery-ui-sortable' ),
+			'1.0.0',
+			true
+		);
+		wp_register_script(
 			'csframework-repeatable-field',
 			CSFRAMEWORK_PLUGIN_URL . 'assets/js/repeatable.js',
-			array( 'jquery' ),
+			array( 'csframework-sortable-field' ),
 			'1.0.0',
 			true
 		);

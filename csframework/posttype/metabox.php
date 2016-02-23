@@ -135,7 +135,7 @@ class PosttypeMetabox extends Base
 							$field['parent'] = $this;
 							$this->_fields[$name] = new $field_class( $this->_app, $field );
 						} else {
-							throw new \Exception( sprintf( __( "Unknown field type `%s`", 'coolascript-framework' ), $field['type'] ) );
+							throw new \Exception( sprintf( __( "csframework\PosttypeMetabox: Unknown field type `%s`", 'coolascript-framework' ), $field['type'] ) );
 							
 						}
 					}

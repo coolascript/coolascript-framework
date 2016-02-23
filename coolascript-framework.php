@@ -34,7 +34,6 @@ define( 'CSFRAMEWORK_MINIMUM_PHP_VERSION', '5.3' );
 define( 'CSFRAMEWORK_MINIMUM_WP_VERSION', '3.1' );
 define( 'CSFRAMEWORK_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'CSFRAMEWORK_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'CSFRAMEWORK_PLUGIN_BASENAME', plugin_basename( dirname( __FILE__ ) ) );
 
 if ( version_compare( PHP_VERSION, CSFRAMEWORK_MINIMUM_PHP_VERSION, '>=' ) && version_compare( $GLOBALS['wp_version'], 'CSFRAMEWORK_MINIMUM_WP_VERSION', '>=' ) ) {
 	require_once( CSFRAMEWORK_PLUGIN_DIR . 'csframework/csframework.php' );
