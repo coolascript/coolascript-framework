@@ -1,7 +1,7 @@
 <?php
 namespace csframework;
 /**
-* Fields prototype class
+* Repeatable form field.
 */
 class FieldRepeatable extends Field
 {
@@ -9,28 +9,30 @@ class FieldRepeatable extends Field
 	 * Fields in each new section
 	 * @var array
 	 */
-	private $_fields;
-
+	private $_fields = array();
+	
+	/**
+	 * Instantiate a class object
+	 * @param csframework\Csframework $app  App instance
+	 * @param array $args Field parameters
+	 */
 	function __construct( $app, $args )
 	{
-		$fields = $args['fields'];
-		unset( $args['fields'] );
+		$fields = array();
+		if ( is_array( $args ) && isset( $args['fields'] ) ) {
+			$fields = $args['fields'];
+			unset( $args['fields'] );
+		}
 		parent::__construct( $app, $args );
-		$this->_setFields( $fields );
+		$this->setFields( $fields );
 		add_action( 'wp_ajax_' . $this->getInputPath(), array( $this, 'ajaxRow' ) );
 	}
 
-	/*public function reInit()
-	{
-		foreach ( $this->_fields as &$field ) {
-			$field->setParent( $this );
-			if ( method_exists( $field, 'reInit' ) ) {
-				$field->reInit();
-			}
-		}
-		add_action( 'wp_ajax_' . $this->getInputPath(), array( $this, 'ajaxRow' ) );
-	}*/
-
+	/**
+	 * Enqueue scripts and styles on backend.
+	 * Override this function in your class to enqueue scripts and styles on backend.
+	 * Don't forget do parent::addAdminAssets();
+	 */
 	public function addAdminAssets()
 	{
 		parent::addAdminAssets();
@@ -38,7 +40,11 @@ class FieldRepeatable extends Field
 		wp_enqueue_script( 'csframework-repeatable-field' );
 	}
 
-	private function _setFields( $val )
+	/**
+	 * Set section fiels
+	 * @param array $val Array of fields to add
+	 */
+	public function setFields( $val )
 	{
 		if ( is_array( $val ) ) {
 			foreach ( $val as $name => $field ) {
@@ -61,24 +67,61 @@ class FieldRepeatable extends Field
 		return $this;
 	}
 
+	/**
+	 * Retriev fields
+	 * @return array Array of all fields
+	 */
 	public function getFields()
 	{
 		return $this->_fields;
 	}
 
+	/**
+	 * Retriev field by its name
+	 * @param  string $name Name of the field
+	 * @return csframework\Field|null       Field object or null if not exist
+	 */
 	public function getField( $name )
 	{
 		return isset( $this->_fields[$name] ) ? $this->_fields[$name] : null;
 	}
 
+	/**
+	 * Add new field
+	 * @param csframework\Field|array $field New field object or array with field parameters
+	 */
+	public function addField( $field )
+	{
+		if ( is_array( $field ) && isset( $field['name'], $field['type'] ) ) {
+			$field_class = 'rhtheme\Field' . ucfirst( $field['type'] );
+			if ( class_exists( $field_class ) ) {
+				$field['parent'] = &$this;
+				$this->_fields[$field['name']] = new $field_class( $field );
+			} else {
+				throw new \Exception( sprintf( __( "csframework\FieldSortable: Unknown field type `%s`", 'coolascript-framework' ), $field['type'] ) );
+			}
+		} elseif ( is_object( $field ) && method_exists( $field, 'getName' )  && method_exists( $field, 'getType' ) ) {
+			$this->_fields[$field->getName()] = $field;
+		}
+	}
+
+	/**
+	 * Remove field by its name
+	 * @param string $name Field name
+	 */
+	public function removeField( $name )
+	{
+		if ( isset( $this->_fields[$name] ) ) {
+			unset( $this->_fields[$name] );
+		}
+	}
+
+	/**
+	 * Render a field HTML
+	 * @return void
+	 */
 	public function render()
 	{
-		/*foreach ($this->_fields as &$field) {
-			$field->setParent( $this );
-			if ( method_exists( $field, 'reInit' ) ) {
-				$field->reInit();
-			}
-		}*/
 		?>
 		<div class="csframework-field csframework-field-repeatable<?php echo esc_attr( $this->_depend ? ' csframework-depend-field' : '' );  ?>"<?php echo ( bool ) $this->_depend ? ' data-depend="' . esc_attr( implode( ';', $this->getDependecies() ) ) . '"' : '';  ?>>
 			<?php if ( $this->_label && $this->_show_label ): ?>
@@ -92,8 +135,8 @@ class FieldRepeatable extends Field
 			<?php endif ?>
 			</div>
 			<div class="csframework-field-row">
-				<span class="spinner"></span>
 				<a href="<?php echo admin_url( 'admin-ajax.php' ); ?>?action=<?php echo esc_attr( $this->getInputPath() ); ?>" data-target="<?php echo esc_attr(  $this->getInputId() ); ?>" class="csframework-add-repeatable-row button"><?php _e( '+ Add', 'coolascript-framework' ) ?></a>
+				<span class="spinner"></span>
 			</div>
 			<?php if ( $this->_description ): ?>
 				<?php echo apply_filters( 'the_content', $this->_description ); ?>
@@ -120,6 +163,11 @@ class FieldRepeatable extends Field
 		<?php
 	}
 
+	/**
+	 * Set indexes to fields
+	 * @param array $indexes Array of indexes
+	 * @param object $parent  Field parent
+	 */
 	private function _setIndexes( $indexes, $parent = null )
 	{
 		if ( !$indexes ) {
@@ -138,20 +186,23 @@ class FieldRepeatable extends Field
 		return $this;
 	}
 
+	/**
+	 * Ajax action to add new row
+	 * @return void
+	 */
 	public function ajaxRow()
 	{
-		/*foreach ($this->_fields as &$field) {
-			$field->setParent( $this );
-			if ( method_exists( $field, 'reInit' ) ) {
-				$field->reInit();
-			}
-		}*/
 		$indx = $_POST['indx'];
 		$indexes = isset( $_POST['indexes'] ) ? array_reverse( $_POST['indexes'] ) : null;
 		$this->setIndex( $indx )->_setIndexes( $indexes )->_renderRow();
 		wp_die();
 	}
 
+	/**
+	 * Sanitize field value
+	 * @param  mixed $value Field value
+	 * @return array        Sanitized value
+	 */
 	public function sanitize( $value )
 	{
 		$s_value = array();
