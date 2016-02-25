@@ -37,7 +37,7 @@ class FieldColor extends Field
 			<?php if ( $this->_label && $this->_show_label ): ?>
 				<label for="<?php echo esc_attr( $this->getInputId() ); ?>" class="label"><?php echo apply_filters( 'the_title', $this->_label ); ?>:</label>
 			<?php endif ?>
-			<input type="text" name="<?php echo esc_attr( $this->getInputName() ); ?>" id="<?php echo esc_attr( $this->getInputId() ); ?>" value="<?php echo esc_attr( $this->_value ? $this->_value : $this->_default ); ?>" class="csframework-color-field<?php echo esc_attr( $this->_class ? ' ' . $this->_class : '' ); ?>" />
+			<input type="text" name="<?php echo esc_attr( $this->getInputName() ); ?>" id="<?php echo esc_attr( $this->getInputId() ); ?>" value="<?php echo esc_attr( !is_null( $this->_value ) ? $this->_value : $this->_default ); ?>" class="csframework-color-field<?php echo esc_attr( $this->_class ? ' ' . $this->_class : '' ); ?>" />
 			<?php if ( $this->_description ): ?>
 				<?php echo apply_filters( 'the_content', $this->_description ); ?>
 			<?php endif ?>

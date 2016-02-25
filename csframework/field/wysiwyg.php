@@ -36,10 +36,7 @@ class FieldWysiwyg extends Field
 			<?php if ( $this->_label && $this->_show_label ): ?>
 				<label for="<?php echo esc_attr( $this->getInputId() ); ?>" class="label"><?php echo apply_filters( 'the_title', $this->_label ); ?>:</label>
 			<?php endif ?>
-			<?php wp_editor( $this->_value ? $this->_value : $this->_default, $this->getInputId() ) ?>
-			<!-- <div class="wp-editor-container">
-				<textarea name="<?php echo esc_attr( $this->getInputName() ); ?>" id="<?php echo esc_attr( $this->getInputId() ); ?>" class="<?php echo esc_attr( $this->_class ); ?> csframework-wysiwyg-field"><?php echo esc_textarea( $this->_value ? $this->_value : $this->_default ); ?></textarea>
-			</div> -->
+			<?php wp_editor( !is_null( $this->_value ) ? $this->_value : $this->_default, $this->getInputId() ) ?>
 			<?php if ( $this->_description ): ?>
 				<?php echo apply_filters( 'the_content', $this->_description ); ?>
 			<?php endif ?>
