@@ -194,11 +194,11 @@ class PosttypeMetabox extends Base
 	public function render( $post )
 	{
 		?>
-		<div class="Csplugin-box">
+		<div class="csframework-metabox">
 		<?php foreach ($this->_fields as $name => $field): ?>
 			<?php $value = get_post_meta( $post->ID, $name, true ) ?>
-			<?php $field->setValue( empty( $value ) ? null : $value ); ?>
-			<div class="field-row">
+			<?php $field->setValue( $value ); ?>
+			<div class="csframework-field-row">
 				<?php $field->render(); ?>
 			</div>
 		<?php endforeach ?>
