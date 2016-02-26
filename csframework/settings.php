@@ -5,16 +5,67 @@ namespace csframework;
 */
 class Settings extends Base
 {
+	/**
+	 * Settings page slug, option group and option name
+	 * @var string
+	 */
 	protected $_name = 'settings';
+	/**
+	 * Settings page and menu title
+	 * @var string
+	 */
 	protected $_title = '';
+	/**
+	 * The capability required for this menu to be displayed to the user
+	 * @var string
+	 */
 	protected $_capability = 'activate_plugins';
+	/**
+	 * Page menu parent. Will be added as submenu if not null.
+	 * @var null|string
+	 */
 	protected $_parent = null;
+	/**
+	 * The URL to the icon to be used for this menu.
+	 * Pass a base64-encoded SVG using a data URI, which will be colored to match the color scheme.
+	 * This should begin with 'data:image/svg+xml;base64,'.
+	 * Pass the name of a Dashicons helper class to use a font icon, e.g. 'dashicons-chart-pie'.
+	 * * Pass 'none' to leave div.wp-menu-image empty so an icon can be added via CSS. 
+	 * @var string
+	 */
 	protected $_icon = '';
+	/**
+	 * The position in the menu order this one should appear
+	 * @var null
+	 */
 	protected $_position = null;
+	/**
+	 * Settings page sections
+	 * @var array
+	 */
 	protected $_sections = array();
+	/**
+	 * Settings page options
+	 * @var array
+	 */
 	protected $_options = array();
+	/**
+	 * Settings app class
+	 * @var csframework\Csframework|null
+	 */
 	protected $_app = null;
 
+	/**
+	 * Instantiate Settings object
+	 * @param csframework\Csframework $app        Settings app class
+	 * @param string $title      Settings page and menu title
+	 * @param string $name       Settings page slug, option group and option name
+	 * @param string $capability The capability required for this menu to be displayed to the user
+	 * @param string $parent     Parent menu slug to add as submenu
+	 * @param string $icon_url   The URL to the icon to be used for this menu. <em> Pass a base64-encoded SVG using a data URI, which will be colored to match the color scheme. This should begin with 'data:image/svg+xml;base64,'. </em> Pass the name of a Dashicons helper class to use a font icon, e.g. 'dashicons-chart-pie'. * Pass 'none' to leave div.wp-menu-image empty so an icon can be added via CSS.
+
+	 * @param int $position   The position in the menu order this one should appear
+	 */
 	function __construct( $app, $title, $name, $capability = 'activate_plugins', $parent = null, $icon_url = '', $position = null ) {
 		$this->_app = $app;
 		$this->_name = sanitize_title( $name );
@@ -25,6 +76,10 @@ class Settings extends Base
 		$this->_position = $position;
 	}
 
+	/**
+	 * Add settings page and creates menu item for it
+	 * Its an admin_menu action function and runs automaticaly on render
+	 */
 	public function addSettingsPage()
 	{
 		if ( !is_null( $this->_parent ) ) {
@@ -34,6 +89,11 @@ class Settings extends Base
 		}
 	}
 
+
+	/**
+	 * Register settings and options
+	 * Its an admin_init action function and runs automaticaly on render
+	 */
 	public function init()
 	{
 		register_setting( $this->_name, $this->_app->getFieldsVar(), array( $this, 'sanitize' ) );
@@ -48,11 +108,35 @@ class Settings extends Base
 
 	}
 
+	/**
+	 * Sanitize the option values and save it to database on update action
+	 * @param  mixed $val Input value
+	 */
 	public function sanitize( $val )
 	{
-		update_option( $this->_name, $val[$this->_name] );
+		var_dump($val);
+		$errors = false;
+		foreach ( $val[$this->_name] as $key => $value ) {
+			if ( $this->_options[$key]->isRequired() && !$value ) {
+				add_settings_error( $this->_name, $this->_name . '_error_' . $key . '_required', sprintf( __( 'Field `%s` is required!', 'coolascript-framework' ), $this->_options[$key]->getLabel() ), 'error' );
+				$errors = true;
+			} elseif ( $this->_options[$key]->getType() == 'email' && !is_email( $value ) ) {
+				add_settings_error( $this->_name, $this->_name . '_error_' . $key . '_wrong_email', sprintf( __( '`%s` is not valid email address!', 'coolascript-framework' ), $this->_options[$key]->getLabel() ), 'error' );
+				$errors = true;
+			}
+		}
+		if ( !$errors && ( update_option( $this->_name, $val[$this->_name] ) || get_option( $this->_name ) == $val[$this->_name] ) ) {
+			add_settings_error( $this->_name, $this->_name . '_notice', __( 'Settings saved', 'coolascript-framework' ), 'updated' );
+		} elseif( !$errors ) {
+			add_settings_error( $this->_name, $this->_name . '_error', __( 'Something went wrong!', 'coolascript-framework' ), 'error' );
+		}
 	}
 
+	/**
+	 * Add new settings section
+	 * @param string $slug Section unique slug
+	 * @param string $name Section title
+	 */
 	public function addSection( $slug, $name )
 	{
 		if ( !isset( $this->_sections[$slug] ) ) {
@@ -64,11 +148,21 @@ class Settings extends Base
 		return $this;
 	}
 
+	/**
+	 * Retriev section by slug
+	 * @param  string $slug Section slug
+	 * @return array       Array with section properies and fields
+	 */
 	public function getSection( $slug )
 	{
 		return isset( $this->_sections[$slug] ) ? $this->_sections[$slug] : false;
 	}
 
+	/**
+	 * Add fields to the section
+	 * @param string $section       Section slug
+	 * @param array|object $field_options Field options array or field object
+	 */
 	public function addOption( $section, $field_options )
 	{
 		if ( is_array( $field_options ) ) {
@@ -92,11 +186,21 @@ class Settings extends Base
 		return $this;
 	}
 
+	/**
+	 * Retriev Field by name
+	 * @param  string $name Field name
+	 * @return csFramework\Field       Field object
+	 */
 	public function getOption( $name )
 	{
 		return $this->_options[$name];
 	}
 
+	/**
+	 * Retriev field value by name
+	 * @param  string $name Field name
+	 * @return bool|string       Field value or false on error
+	 */
 	public function getOptionValue( $name )
 	{
 		if ( isset( $this->_options[$name] ) ) {
@@ -109,17 +213,31 @@ class Settings extends Base
 		return false;
 	}
 
+	/**
+	 * Retriev Settings name
+	 * @return string Settings page slug, Settings group and option name
+	 */
 	public function getName()
 	{
 		return $this->_name;
 	}
 
+	/**
+	 * Enqueue scripts and styles to settings page
+	 * Override this function in your class to enqueue scripts and styles on backend.
+	 * Don't forget do parent::addAdminAssets();
+	 */
 	public function addAdminAssets()
 	{
 		wp_enqueue_script( 'csframework-accordion' );
 	}
 
 	public function renderSection() {}
+
+	/**
+	 * Render settings section HTML
+	 * @param  string $slug Section slug
+	 */
 	protected function _renderSection( $slug ) {
 		?>
 			<h3 class="csframewoork-settings-section-title csframewoork-section-<?php echo esc_attr( $slug ); ?>">
@@ -144,15 +262,19 @@ class Settings extends Base
 		<?php
 	}
 
+	/**
+	 * Render Settings page HTML
+	 * @return [type] [description]
+	 */
 	public function showSettings()
 	{
 		?>
 		<div class="wrap">
 			<form action="<?php echo admin_url( 'options.php' ); ?>" method="post" enctype="multipart/form-data">
-				<?php settings_fields( $this->_name ); ?>
 				<h2>
 					<?php echo get_admin_page_title(); ?>
 				</h2>
+				<?php settings_fields( $this->_name ); ?>
 				<div class="csframewoork-accordion">
 					<?php foreach ($this->_sections as $slug => $section): ?>
 						<?php $this->_renderSection( $slug ) ?>
@@ -164,9 +286,21 @@ class Settings extends Base
 		<?php
 	}
 
+	/**
+	 * Show settings page messeges
+	 */
+	public function settingsNotice()
+	{
+		settings_errors( $this->_name );
+	}
+
+	/**
+	 * Generate Settings page and render page HTML if needed
+	 */
 	public function render()
 	{
 		add_action( 'admin_menu', array( $this, 'addSettingsPage' ) );
 		add_action( 'admin_init', array( $this, 'init' ) );
+		add_action( 'admin_notices', array( $this, 'settingsNotice' ) );
 	}
 }
