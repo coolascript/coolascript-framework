@@ -157,7 +157,7 @@ class Csframework
 			if ( file_exists( $dir . 'taxonomy' ) && $handle = opendir( $dir . 'taxonomy' ) ) {
 				while ( false !== ( $entry = readdir( $handle ) ) ) {
 					if ( is_file( $dir . 'taxonomy/' . $entry ) ) {
-						$class_name =  $this->getNamespace() . '\Taxonomy' . ucfirst( basename( $entry, '.php' ) );
+						$class_name = $this->getNamespace() . '\Taxonomy' . ucfirst( basename( $entry, '.php' ) );
 						if ( class_exists( $class_name ) ) {
 							$class_name::getInstance()->setApp( $this )->addFields();
 						}

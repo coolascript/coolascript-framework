@@ -64,21 +64,21 @@ abstract class Widget extends \WP_Widget
 		<?php foreach ( $this->_fields as $name => $field ): ?>
 			<div class="widget-field">
 				<?php if ( $field['type'] == 'text' ): ?>
-					<?php $value = empty( $instance[$name] ) ? ( isset(  $field['default'] ) ? ( string ) $field['default'] : '' ) : ( string ) $instance[$name] ?>
+					<?php $value = empty( $instance[$name] ) ? ( isset( $field['default'] ) ? ( string ) $field['default'] : '' ) : ( string ) $instance[$name] ?>
 					<?php if ( isset( $field['label'] ) ): ?>
 						<label for="<?php echo esc_attr( $this->get_field_id( $name ) ); ?>"><?php echo apply_filters( 'csframework_widget_field_label', $field['label'] ); ?></label>
 					<?php endif ?>
 					<input id="<?php echo esc_attr( $this->get_field_id( $name ) ); ?>" class="widefat" name="<?php echo esc_attr( $this->get_field_name( $name ) ); ?>" type="text" value="<?php echo esc_attr( $value ); ?>">
 				<?php endif ?>
 				<?php if ( $field['type'] == 'textarea' ): ?>
-					<?php $value = empty( $instance[$name] ) ? ( isset(  $field['default'] ) ? ( string ) $field['default'] : '' ) : ( string ) $instance[$name] ?>
+					<?php $value = empty( $instance[$name] ) ? ( isset( $field['default'] ) ? ( string ) $field['default'] : '' ) : ( string ) $instance[$name] ?>
 					<?php if ( isset( $field['label'] ) ): ?>
 						<label for="<?php echo esc_attr( $this->get_field_id( $name ) ); ?>"><?php echo apply_filters( 'csframework_widget_field_label', $field['label'] ); ?></label>
 					<?php endif ?>
 					<textarea id="<?php echo esc_attr( $this->get_field_id( $name ) ); ?>" class="widefat" name="<?php echo esc_attr( $this->get_field_name( $name ) ); ?>"><?php echo esc_textarea( $value ); ?></textarea>
 				<?php endif ?>
 				<?php if ( $field['type'] == 'radio' ): ?>
-					<?php $value = empty( $instance[$name] ) ? ( isset(  $field['default'] ) ? ( string ) $field['default'] : '' ) : ( string ) $instance[$name] ?>
+					<?php $value = empty( $instance[$name] ) ? ( isset( $field['default'] ) ? ( string ) $field['default'] : '' ) : ( string ) $instance[$name] ?>
 					<?php if ( $field['values'] && is_array( $field['values'] ) ): ?>
 						<?php if ( isset( $field['label'] ) ): ?>
 							<h4><?php echo apply_filters( 'csframework_widget_field_label', $field['label'] ); ?></h4>
@@ -94,7 +94,7 @@ abstract class Widget extends \WP_Widget
 					<?php endif ?>
 				<?php endif ?>
 				<?php if ( $field['type'] == 'select' ): ?>
-					<?php $value = empty( $instance[$name] ) ? ( isset(  $field['default'] ) ? ( string ) $field['default'] : '' ) : ( string ) $instance[$name] ?>
+					<?php $value = empty( $instance[$name] ) ? ( isset( $field['default'] ) ? ( string ) $field['default'] : '' ) : ( string ) $instance[$name] ?>
 					<?php if ( $field['values'] && is_array( $field['values'] ) ): ?>
 						<?php if ( isset( $field['label'] ) ): ?>
 							<label for="<?php echo esc_attr( $this->get_field_id( $name ) ); ?>"><?php echo apply_filters( 'csframework_widget_field_label', $field['label'] ); ?></label>

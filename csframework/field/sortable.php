@@ -94,7 +94,7 @@ class FieldSortable extends Field
 			} else {
 				throw new \Exception( sprintf( __( "csframework\FieldSortable: Unknown field type `%s`", 'coolascript-framework' ), $field['type'] ) );
 			}
-		} elseif ( is_object( $field ) && method_exists( $field, 'getName' )  && method_exists( $field, 'getType' ) ) {
+		} elseif ( is_object( $field ) && method_exists( $field, 'getName' ) && method_exists( $field, 'getType' ) ) {
 			$this->_fields[$field->getName()] = $field;
 		}
 	}
@@ -117,7 +117,7 @@ class FieldSortable extends Field
 	public function render()
 	{
 		?>
-		<div class="csframework-field csframework-field-sortable<?php echo esc_attr( $this->_depend ? ' csframework-depend-field' : '' );  ?>"<?php echo ( bool ) $this->_depend ? ' data-depend="' . esc_attr( implode( ';', $this->getDependecies() ) ) . '"' : '';  ?>>
+		<div class="csframework-field csframework-field-sortable<?php echo esc_attr( $this->_depend ? ' csframework-depend-field' : '' ); ?>"<?php echo ( bool ) $this->_depend ? ' data-depend="' . esc_attr( implode( ';', $this->getDependecies() ) ) . '"' : ''; ?>>
 			<?php if ( $this->_label && $this->_show_label ): ?>
 				<h4><?php echo apply_filters( 'the_title', $this->_label ); ?></h4>
 			<?php endif ?>

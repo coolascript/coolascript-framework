@@ -82,7 +82,7 @@ class FieldFieldset extends Field
 			} else {
 				throw new \Exception( sprintf( __( "csframework\FieldSortable: Unknown field type `%s`", 'coolascript-framework' ), $field['type'] ) );
 			}
-		} elseif ( is_object( $field ) && method_exists( $field, 'getName' )  && method_exists( $field, 'getType' ) ) {
+		} elseif ( is_object( $field ) && method_exists( $field, 'getName' ) && method_exists( $field, 'getType' ) ) {
 			$this->_fields[$field->getName()] = $field;
 		}
 	}
@@ -105,7 +105,7 @@ class FieldFieldset extends Field
 	public function render()
 	{
 		?>
-		<fieldset class="csframework-field csframework-field-fieldset<?php echo esc_attr( $this->_depend ? ' csframework-depend-field' : '' );  ?>"<?php echo wp_kses_post( $this->_depend ? ' data-depend="' . implode( ';', $this->getDependecies() ) . '"' : '' );  ?>>
+		<fieldset class="csframework-field csframework-field-fieldset<?php echo esc_attr( $this->_depend ? ' csframework-depend-field' : '' ); ?>"<?php echo wp_kses_post( $this->_depend ? ' data-depend="' . implode( ';', $this->getDependecies() ) . '"' : '' ); ?>>
 			<?php if ($this->_label && $this->_show_label): ?>
 				<legend><?php echo wp_kses_post( $this->_label ); ?></legend>
 			<?php endif ?>

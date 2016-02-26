@@ -47,11 +47,11 @@ class FieldMultiselect extends Field
 	public function render()
 	{
 		?>
-		<div class="csframework-field csframework-field-multiselect<?php echo esc_attr( $this->_depend ? ' csframework-depend-field' : '' );  ?>"<?php echo ( bool ) $this->_depend ? ' data-depend="' . esc_attr( implode( ';', $this->getDependecies() ) ) . '"' : '';  ?>>
+		<div class="csframework-field csframework-field-multiselect<?php echo esc_attr( $this->_depend ? ' csframework-depend-field' : '' ); ?><?php echo esc_attr( $this->isRequired() ? ' csframework-required' : '' ); ?>"<?php echo ( bool ) $this->_depend ? ' data-depend="' . esc_attr( implode( ';', $this->getDependecies() ) ) . '"' : ''; ?>>
 			<?php if ( $this->_label && $this->_show_label ): ?>
-				<label for="<?php echo esc_attr( $this->getInputId() ); ?>" class="label"><?php echo apply_filters( 'the_title', $this->_label ); ?>:</label>
+				<label for="<?php echo esc_attr( $this->getInputId() ); ?>" class="label"><?php echo apply_filters( 'the_title', $this->_label ); ?>:<?php echo ( $this->isRequired() ? ' <em>*</em>' : '' ); ?></label>
 			<?php endif ?>
-			<select name="<?php echo esc_attr( $this->getInputName() ); ?>[]" id="<?php echo esc_attr( $this->getInputId() ); ?>" class="<?php echo esc_attr( $this->_class ); ?>" multiple>
+			<select name="<?php echo esc_attr( $this->getInputName() ); ?>[]" id="<?php echo esc_attr( $this->getInputId() ); ?>" class="<?php echo esc_attr( $this->_class ); ?><?php echo esc_attr( $this->isRequired() ? ' csframework-required-field' : '' ); ?>" multiple>
 			<?php foreach ( $this->_values as $value => $label ): ?>
 				<?php if ( is_array( $label ) ): ?>
 					<optgroup label="<?php echo esc_attr( $value ); ?>">

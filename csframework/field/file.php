@@ -61,10 +61,10 @@ class FieldFile extends Field
 		$file_src = wp_get_attachment_url( $this->_value );
 		$have_file = !empty( $file_src );
 		?>
-		<div class="csframework-field csframework-field-file<?php echo esc_attr( $this->_depend ? ' csframework-depend-field' : '' );  ?>"<?php echo ( bool ) $this->_depend ? ' data-depend="' . esc_attr( implode( ';', $this->getDependecies() ) ) . '"' : '';  ?>>
+		<div class="csframework-field csframework-field-file<?php echo esc_attr( $this->_depend ? ' csframework-depend-field' : '' ); ?><?php echo esc_attr( $this->isRequired() ? ' csframework-required' : '' ); ?>"<?php echo ( bool ) $this->_depend ? ' data-depend="' . esc_attr( implode( ';', $this->getDependecies() ) ) . '"' : ''; ?>>
 			<div class="csframework-file-field" data-type="<?php echo esc_attr( $this->_filetype ); ?>">
 				<?php if ( $this->_label && $this->_show_label ): ?>
-					<h5 class="csframework-label"><?php echo apply_filters( 'the_title', $this->_label ); ?>:</h5>
+					<h5 class="csframework-label"><?php echo apply_filters( 'the_title', $this->_label ); ?>:<?php echo ( $this->isRequired() ? ' <em>*</em>' : '' ); ?></h5>
 				<?php endif ?>
 				<div class="csframework-file-container">
 					<?php if ( $have_file ) {

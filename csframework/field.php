@@ -56,6 +56,11 @@ abstract class Field extends Base
 	 */
 	protected $_depend = null;
 	/**
+	 * Field is required or not
+	 * @var boolean
+	 */
+	protected $_required = false;
+	/**
 	 * Sanitaze field function
 	 * @var string
 	 */
@@ -188,6 +193,24 @@ abstract class Field extends Base
 	{
 		$this->_show_label = ( bool ) $val;
 		return $this;
+	}
+
+	/**
+	 * Sets required field or not
+	 * @param bool $val
+	 */
+	public function setRequired( $val )
+	{
+		$this->_required = ( bool ) $val;
+	}
+
+	/**
+	 * Retriev if field is required
+	 * @return boolean Required or not
+	 */
+	public function isRequired()
+	{
+		return ( bool ) $this->_required;
 	}
 
 	/**
