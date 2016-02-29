@@ -28,9 +28,10 @@ class Taxonomy
 	 */
 	protected $_object_type = null;
 	/**
-	 * @var csframework\Csframework|null
+	 * Taxonomy custom fields base name
+	 * @var string
 	 */
-	protected $_app = null;
+	protected $_fields_base = null;
 
 	/**
 	 * Taxonomy constructor
@@ -76,13 +77,13 @@ class Taxonomy
 	}
 
 	/**
-	 * Sets app from which post type was created
-	 * @param csframework\Csframework $app Application main class instance
+	 * Set custom fields base name
+	 * @param string $app Application main class instance
 	 * @return csframework\Taxonomy
 	 */
-	public function setApp( $app )
+	public function setFieldsBase( $fields_base )
 	{
-		$this->_app = $app;
+		$this->_fields_base = $fields_base;
 		return $this;
 	}
 
@@ -142,7 +143,7 @@ class Taxonomy
 				$field_class = 'csframework\Field' . ucfirst( $args['type'] );
 				if ( class_exists( $field_class ) ) {
 					$args['parent'] = $this;
-					$this->_fields[$args['name']] = new $field_class( $this->_app, $args );
+					$this->_fields[$args['name']] = new $field_class( $this->_fields_base, $args );
 				} else {
 					throw new \Exception( sprintf( __( "csframework\Taxonomy: Unknown field type `%s`", 'coolascript-framework' ), $args['type'] ) );
 					
@@ -252,8 +253,8 @@ class Taxonomy
 	public function onSave( $term_id )
 	{
 		foreach ( $this->_fields as $name => $field ) {
-			if ( isset( $_REQUEST[$this->_app->getFieldsVar()][static::$taxonomy][$name] ) ) {
-				update_option( "tax_" . static::$taxonomy . "_{$term_id}_{$name}", $_REQUEST[$this->_app->getFieldsVar()][static::$taxonomy][$name] );
+			if ( isset( $_REQUEST[$this->_fields_base][static::$taxonomy][$name] ) ) {
+				update_option( "tax_" . static::$taxonomy . "_{$term_id}_{$name}", $_REQUEST[$this->_fields_base][static::$taxonomy][$name] );
 			} else {
 				delete_option( "tax_" . static::$taxonomy . "_{$term_id}_{$name}" );
 			}

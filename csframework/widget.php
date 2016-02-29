@@ -13,7 +13,7 @@ abstract class Widget extends \WP_Widget
 	/**
 	 * @var csframework\Csframework|null
 	 */
-	protected $_app = null;
+	protected $_fields_base = null;
 	
 	public function __construct( $id_base, $name, $widget_options = array(), $control_options = array() )
 	{
@@ -30,13 +30,13 @@ abstract class Widget extends \WP_Widget
 	}
 
 	/**
-	 * Sets app from which widget was registered
-	 * @param csframework\Csframework $app Application main class instance
-	 * @return csframework\Taxonomy
+	 * Set widget fields base name
+	 * @param string $base_name Application main class instance
+	 * @return csframework\Widget
 	 */
-	public function setApp( $app )
+	public function setFieldsBase( $base_name )
 	{
-		$this->_app = $app;
+		$this->_fields_base = $base_name;
 		return $this;
 	}
 

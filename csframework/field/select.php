@@ -13,12 +13,12 @@ class FieldSelect extends Field
 	
 	/**
 	 * Instantiate a class object
-	 * @param csframework\Csframework $app  App instance
+	 * @param string $fields_base_name  Field base name
 	 * @param array $args Field parameters
 	 */
-	function __construct( $app, $args )
+	function __construct( $fields_base_name, $args )
 	{
-		parent::__construct( $app, $args );
+		parent::__construct( $fields_base_name, $args );
 	}
 
 	/**
@@ -56,11 +56,11 @@ class FieldSelect extends Field
 				<?php if ( is_array( $label ) ): ?>
 					<optgroup label="<?php echo esc_attr( $value ); ?>">
 						<?php foreach ( $label as $group_item_val => $group_item_label ): ?>
-							<option value="<?php echo esc_attr( $group_item_val ); ?>" <?php selected( $group_item_val, !is_null( $this->_value ) && !empty( $this->_value ) ? $this->_value : $this->_default ); ?>><?php echo apply_filters( 'the_title', $group_item_label ); ?></option>
+							<option value="<?php echo esc_attr( $group_item_val ); ?>" <?php selected( ( string ) $group_item_val, !is_null( $this->_value ) ? ( string ) $this->_value : ( string ) $this->_default ); ?>><?php echo apply_filters( 'the_title', $group_item_label ); ?></option>
 						<?php endforeach ?>
 					</optgroup>
 				<?php else: ?>
-					<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $value, !is_null( $this->_value ) && !empty( $this->_value ) ? $this->_value : $this->_default ); ?>><?php echo apply_filters( 'the_title', $label ); ?></option>
+					<option value="<?php echo esc_attr( $value ); ?>" <?php selected( ( string ) $value, !is_null( $this->_value ) ? ( string ) $this->_value : ( string ) $this->_default ); ?>><?php echo apply_filters( 'the_title', $label ); ?></option>
 				<?php endif ?>
 			<?php endforeach ?>
 			</select>

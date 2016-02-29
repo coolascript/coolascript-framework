@@ -71,20 +71,20 @@ abstract class Field extends Base
 	 */
 	protected $_parent = null;
 	/**
-	 * @var csframework\Csframework|null
+	 * @var string
 	 */
-	protected $_app = null;
+	protected $_base_name = 'csframework';
 
 	/**
 	 * Instantiate Field object
-	 * @param csframework\Csframework $app  App object
+	 * @param string $base_name  App object
 	 * @param array $args Field parameters
 	 */
-	function __construct( $app, $args )
+	function __construct( $base_name, $args )
 	{
 		if ( isset( $args['name'] ) && !empty( $args['name'] ) ) {
 			parent::__construct();
-			$this->_app = $app;
+			$this->_base_name = $base_name;
 			$parents = array();
 			if ( isset( $args['parent'] ) ) {
 				$parent = $args['parent'];
@@ -432,12 +432,12 @@ abstract class Field extends Base
 			$addBase = false;
 		} else {
 			if ( method_exists( $parent, 'getIndex' ) ) {
-				$input_name = ( method_exists( $parent, 'getName' ) ? $open . $parent->getName() . $close : '' ) . $open . (int) $parent->getIndex() . $close . $input_name;
+				$input_name = ( method_exists( $parent, 'getName' ) ? $open . $parent->getName() . $close : '' ) . $open . ( int ) $parent->getIndex() . $close . $input_name;
 			} else {
 				$input_name = ( method_exists( $parent, 'getName' ) ? $open . $parent->getName() . $close : '' ) . $input_name;
 			}
 		}
-		return esc_attr( ( $addBase ? $this->_app->getFieldsVar() : '' ) . $input_name );
+		return esc_attr( ( $addBase ? $this->_base_name : '' ) . $input_name );
 	}
 
 	/**

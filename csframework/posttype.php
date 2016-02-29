@@ -17,9 +17,10 @@ class Posttype
 	 */
 	protected $_metaboxes = array();
 	/**
-	 * @var csframework\Csframework|null
+	 * Fields base name
+	 * @var string
 	 */
-	protected $_app = null;
+	protected $_fields_base = 'csframework';
 
 	/**
 	 * Custom post type constructor
@@ -28,9 +29,6 @@ class Posttype
 	 */
 	protected function __construct( $slug, $args = null )
 	{
-		if ( is_null( $this->_app ) ) {
-			$this->_app = Csframework::getInstance();
-		}
 		if ( !post_type_exists( $slug ) ) {
 			if ( !is_wp_error( $post_type_object = register_post_type( $slug, $args ) ) ) {
 				self::$post_type = $slug;
@@ -71,13 +69,14 @@ class Posttype
 	}
 
 	/**
-	 * Sets app from which post type was created
-	 * @param csframework\Csframework $app Application main class instance
-	 * @return csframework\Csframework
+	 * Set Metabox fields base name
+	 * @param string $fields_base Base name of all custom fields
+	 * @return csframework\Posttype
 	 */
-	public function setApp( $app )
+	public function setFieldsBase( $fields_base )
 	{
-		$this->_app = $app;
+		$this->_fields_base = $fields_base;
+		return $this;
 	}
 
 	/**
@@ -113,7 +112,7 @@ class Posttype
 	public function addMetabox( $args )
 	{
 		if ( is_array( $args ) && isset( $args['name'] ) ) {
-			$this->_metaboxes[$args['name']] = new PosttypeMetabox( self::$post_type, $this->_app, $args );
+			$this->_metaboxes[$args['name']] = new PosttypeMetabox( self::$post_type, $this->_fields_base, $args );
 		}
 		return $this;
 	}
@@ -164,8 +163,8 @@ class Posttype
 	public function onSave( $post_id )
 	{
 		if ( ( isset( $_POST['post_type'] ) && self::$post_type == $_POST['post_type'] ) && ( !isset( $_POST['post_view'] ) || $_POST['post_view'] != 'list' ) ) {
-			if ( isset( $_REQUEST[$this->_app->getFieldsVar()] ) ) {
-				foreach ( $_REQUEST[$this->_app->getFieldsVar()] as $metabox => $fields ) {
+			if ( isset( $_REQUEST[$this->_fields_base] ) ) {
+				foreach ( $_REQUEST[$this->_fields_base] as $metabox => $fields ) {
 					if ( isset( $this->_metaboxes[$metabox] ) ) {
 						foreach ( $fields as $key => $value ) {
 							if ( $field = $this->_metaboxes[$metabox]->getField( $key ) ) {

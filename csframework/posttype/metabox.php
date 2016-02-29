@@ -41,21 +41,22 @@ class PosttypeMetabox extends Base
 	 */
 	private $_fields = array();
 	/**
-	 * @var csframework\Csframework|null
+	 * Metabox fields base name
+	 * @var string
 	 */
-	protected $_app = null;
+	protected $_fields_base = null;
 	
 	/**
 	 * Creates metabox instance
 	 * @param string $post_type Post type slug
-	 * @param csframework\Csframework $app App instance
+	 * @param string $fields_base_name Fields base name
 	 * @param array $args       Metabox parameters
 	 */
-	function __construct( $post_type, $app, $args )
+	function __construct( $post_type, $fields_base_name, $args )
 	{
 		$this->_id = $post_type . '-' . $args['name'];
 		$this->_post_type = $post_type;
-		$this->_app = $app;
+		$this->_fields_base = $fields_base_name;
 		$this->setOptions( $args );
 		add_action( 'add_meta_boxes', array( $this, 'addMetaBox' ) );
 	}
@@ -133,7 +134,7 @@ class PosttypeMetabox extends Base
 						if ( class_exists( $field_class ) ) {
 							$field['name'] = $name;
 							$field['parent'] = $this;
-							$this->_fields[$name] = new $field_class( $this->_app, $field );
+							$this->_fields[$name] = new $field_class( $this->_fields_base, $field );
 						} else {
 							throw new \Exception( sprintf( __( "csframework\PosttypeMetabox: Unknown field type `%s`", 'coolascript-framework' ), $field['type'] ) );
 							

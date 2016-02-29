@@ -13,12 +13,12 @@ class FieldFile extends Field
 
 	/**
 	 * Instantiate a class object
-	 * @param csframework\Csframework $app  App instance
+	 * @param string $fields_base_name  Field base name
 	 * @param array $args Field parameters
 	 */
-	function __construct( $app, $args )
+	function __construct( $fields_base_name, $args )
 	{
-		parent::__construct( $app, $args );
+		parent::__construct( $fields_base_name, $args );
 		add_action( 'wp_ajax_file', array( $this, 'ajaxFile' ) );
 	}
 

@@ -13,17 +13,17 @@ class FieldRepeatable extends Field
 	
 	/**
 	 * Instantiate a class object
-	 * @param csframework\Csframework $app  App instance
+	 * @param string $fields_base_name  Field base name
 	 * @param array $args Field parameters
 	 */
-	function __construct( $app, $args )
+	function __construct( $fields_base_name, $args )
 	{
 		$fields = array();
 		if ( is_array( $args ) && isset( $args['fields'] ) ) {
 			$fields = $args['fields'];
 			unset( $args['fields'] );
 		}
-		parent::__construct( $app, $args );
+		parent::__construct( $fields_base_name, $args );
 		$this->setFields( $fields );
 		add_action( 'wp_ajax_' . $this->getInputPath(), array( $this, 'ajaxRow' ) );
 	}
@@ -54,7 +54,7 @@ class FieldRepeatable extends Field
 						if ( class_exists( $field_class ) ) {
 							$field['name'] = $name;
 							$field['parent'] = $this;
-							$this->_fields[$name] = new $field_class( $this->_app, $field );
+							$this->_fields[$name] = new $field_class( $this->_base_name, $field );
 						} else {
 							throw new \Exception( sprintf( __( "csframework\FieldRepeatable: Unknown field type `%s`", 'coolascript-framework' ), $field['type'] ) );
 						}
@@ -154,9 +154,8 @@ class FieldRepeatable extends Field
 						<a href="#<?php echo esc_attr( $this->getInputId() ); ?>" class="csframework-remove-repeatable-row button dashicons dashicons-trash"></a>
 					</div>
 				<?php foreach ( $this->_fields as $rf_name => $rf_field ): ?>
-					<?php $rf_field->setValue( isset( $val[$rf_field->getName()] ) ? $val[$rf_field->getName()] : '' ) ?>
 					<div class="csframework-field-row">
-						<?php $rf_field->render() ?>
+						<?php $rf_field->setValue( isset( $val[$rf_field->getName()] ) ? $val[$rf_field->getName()] : '' )->render() ?>
 					</div>
 				<?php endforeach ?>
 				</div>

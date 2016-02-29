@@ -8,13 +8,13 @@ class FieldWysiwyg extends Field
 	
 	/**
 	 * Instantiate a class object
-	 * @param csframework\Csframework $app  App instance
+	 * @param string $fields_base_name  Field base name
 	 * @param array $args Field parameters
 	 */
-	function __construct( $app, $args )
+	function __construct( $fields_base_name, $args )
 	{
 		$this->setSanitize( 'textarea' );
-		parent::__construct( $app, $args );
+		parent::__construct( $fields_base_name, $args );
 	}
 
 	/**
@@ -36,7 +36,7 @@ class FieldWysiwyg extends Field
 			<?php if ( $this->_label && $this->_show_label ): ?>
 				<label for="<?php echo esc_attr( $this->getInputId() ); ?>" class="label"><?php echo apply_filters( 'the_title', $this->_label ); ?>:<?php echo ( $this->isRequired() ? ' <em>*</em>' : '' ); ?></label>
 			<?php endif ?>
-			<?php wp_editor( !is_null( $this->_value ) ? $this->_value : $this->_default, $this->getInputId() ) ?>
+			<?php wp_editor( !is_null( $this->_value ) ? $this->_value : $this->_default, $this->getInputId(), array( 'textarea_name' => $this->getInputName() ) ) ?>
 			<?php if ( $this->_description ): ?>
 				<?php echo apply_filters( 'the_content', $this->_description ); ?>
 			<?php endif ?>

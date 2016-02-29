@@ -13,17 +13,17 @@ class FieldFieldset extends Field
 	
 	/**
 	 * Instantiate a class object
-	 * @param csframework\Csframework $app  App instance
+	 * @param string $fields_base_name  Field base name
 	 * @param array $args Field parameters
 	 */
-	function __construct( $app, $args )
+	function __construct( $fields_base_name, $args )
 	{
 		$fields = array();
 		if ( is_array( $args ) && isset( $args['fields'] ) ) {
 			$fields = $args['fields'];
 			unset( $args['fields'] );
 		}
-		parent::__construct( $app, $args );
+		parent::__construct( $fields_base_name, $args );
 		$this->setFields( $fields );
 	}
 
@@ -40,7 +40,7 @@ class FieldFieldset extends Field
 					if ( class_exists( $field_class ) ) {
 						$field['name'] = $name;
 						$field['parent'] = &$this;
-						$this->_fields[$name] = new $field_class( $this->_app, $field );
+						$this->_fields[$name] = new $field_class( $this->_base_name, $field );
 					} else {
 						throw new \Exception( sprintf( __( "csframework\FieldSortable: Unknown field type `%s`", 'coolascript-framework' ), $field['type'] ) );
 					}

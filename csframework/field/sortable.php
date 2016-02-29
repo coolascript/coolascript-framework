@@ -13,17 +13,17 @@ class FieldSortable extends Field
 	
 	/**
 	 * Instantiate a class object
-	 * @param csframework\Csframework $app  App instance
+	 * @param string $fields_base_name  Field base name
 	 * @param array $args Field parameters
 	 */
-	function __construct( $app, $args )
+	function __construct( $fields_base_name, $args )
 	{
 		$fields = array();
 		if ( is_array( $args ) && isset( $args['fields'] ) ) {
 			$fields = $args['fields'];
 			unset( $args['fields'] );
 		}
-		parent::__construct( $app, $args );
+		parent::__construct( $fields_base_name, $args );
 		$this->setFields( $fields );
 	}
 
@@ -52,7 +52,7 @@ class FieldSortable extends Field
 					if ( class_exists( $field_class ) ) {
 						$field['name'] = $name;
 						$field['parent'] = &$this;
-						$this->_fields[$name] = new $field_class( $this->_app, $field );
+						$this->_fields[$name] = new $field_class( $this->_base_name, $field );
 					} else {
 						throw new \Exception( sprintf( __( "csframework\FieldSortable: Unknown field type `%s`", 'coolascript-framework' ), $field['type'] ) );
 					}
@@ -90,7 +90,7 @@ class FieldSortable extends Field
 			$field_class = 'rhtheme\Field' . ucfirst( $field['type'] );
 			if ( class_exists( $field_class ) ) {
 				$field['parent'] = &$this;
-				$this->_fields[$field['name']] = new $field_class( $field );
+				$this->_fields[$field['name']] = new $field_class( $this->_base_name, $field );
 			} else {
 				throw new \Exception( sprintf( __( "csframework\FieldSortable: Unknown field type `%s`", 'coolascript-framework' ), $field['type'] ) );
 			}
@@ -129,7 +129,7 @@ class FieldSortable extends Field
 							<span class="button csframework-sortable-handler dashicons dashicons-sort"></span>
 						</div>
 						<div class="csframework-field-row">
-							<?php $sf_field->render() ?>
+							<?php $sf_field->setValue( isset( $this->_value[0][$sf_field->getName()] ) ? $this->_value[0][$sf_field->getName()] : '' )->render() ?>
 						</div>
 					</div>
 				<?php $i++; endforeach ?>
@@ -150,14 +150,13 @@ class FieldSortable extends Field
 	public function sanitize( $value )
 	{
 		$s_value = array();
-		if ( $value = is_array( $value ) ? array_values( $value ) : array() ) {
-			foreach ( $value as $indx => $val ) {
-				$s_value[$indx] = array();
-				foreach ( $this->_fields as $rf_name => $rf_field ) {
-					$s_value[$indx][$rf_name] = $rf_field->sanitize( isset( $val[$rf_field->getName()] ) ? $val[$rf_field->getName()] : null );
-				}
+		if ( $value = is_array( $value[0] ) ? array_values( $value[0] ) : array() ) {
+			$indx = 0;
+			foreach ( $this->_fields as $sf_name => $sf_field ) {
+				$s_value[$sf_name] = $sf_field->sanitize( isset( $value[$indx] ) ? $value[$indx] : null );
+				$indx++;
 			}
 		}
-		return $s_value;
+		return array( $s_value );
 	}
 }

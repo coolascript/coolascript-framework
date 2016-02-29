@@ -8,13 +8,13 @@ class FieldTextarea extends Field
 	
 	/**
 	 * Instantiate a class object
-	 * @param csframework\Csframework $app  App instance
+	 * @param string $fields_base_name  Field base name
 	 * @param array $args Field parameters
 	 */
-	function __construct( $app, $args )
+	function __construct( $fields_base_name, $args )
 	{
 		$this->setSanitize( 'textarea' );
-		parent::__construct( $app, $args );
+		parent::__construct( $fields_base_name, $args );
 	}
 
 	/**

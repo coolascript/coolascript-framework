@@ -50,14 +50,14 @@ class Settings extends Base
 	 */
 	protected $_options = array();
 	/**
-	 * Settings app class
-	 * @var csframework\Csframework|null
+	 * Settings fields base name
+	 * @var string
 	 */
-	protected $_app = null;
+	protected $_fields_base = 'csframework';
 
 	/**
 	 * Instantiate Settings object
-	 * @param csframework\Csframework $app        Settings app class
+	 * @param string $fields_base_name        Settings fields base name
 	 * @param string $title      Settings page and menu title
 	 * @param string $name       Settings page slug, option group and option name
 	 * @param string $capability The capability required for this menu to be displayed to the user
@@ -66,8 +66,8 @@ class Settings extends Base
 
 	 * @param int $position   The position in the menu order this one should appear
 	 */
-	function __construct( $app, $title, $name, $capability = 'activate_plugins', $parent = null, $icon_url = '', $position = null ) {
-		$this->_app = $app;
+	function __construct( $fields_base_name, $title, $name, $capability = 'activate_plugins', $parent = null, $icon_url = '', $position = null ) {
+		$this->_fields_base = $fields_base_name;
 		$this->_name = sanitize_title( $name );
 		$this->_title = apply_filters( 'the_title', $title );
 		$this->_capability = ( string ) $capability;
@@ -96,7 +96,7 @@ class Settings extends Base
 	 */
 	public function init()
 	{
-		register_setting( $this->_name, $this->_app->getFieldsVar(), array( $this, 'sanitize' ) );
+		register_setting( $this->_name, $this->_fields_base, array( $this, 'sanitize' ) );
 		
 		foreach ( $this->_sections as $slug => $section ) {
 			add_settings_section( $slug, $section['name'], array( $this, 'renderSection' ), $this->_name );
@@ -114,13 +114,12 @@ class Settings extends Base
 	 */
 	public function sanitize( $val )
 	{
-		var_dump($val);
 		$errors = false;
 		foreach ( $val[$this->_name] as $key => $value ) {
 			if ( $this->_options[$key]->isRequired() && !$value ) {
 				add_settings_error( $this->_name, $this->_name . '_error_' . $key . '_required', sprintf( __( 'Field `%s` is required!', 'coolascript-framework' ), $this->_options[$key]->getLabel() ), 'error' );
 				$errors = true;
-			} elseif ( $this->_options[$key]->getType() == 'email' && !is_email( $value ) ) {
+			} elseif ( $this->_options[$key]->getType() == 'email' && !empty( $value ) && !is_email( $value ) ) {
 				add_settings_error( $this->_name, $this->_name . '_error_' . $key . '_wrong_email', sprintf( __( '`%s` is not valid email address!', 'coolascript-framework' ), $this->_options[$key]->getLabel() ), 'error' );
 				$errors = true;
 			}
@@ -171,7 +170,7 @@ class Settings extends Base
 				if ( class_exists( $field_class ) ) {
 					$field_options['parent'] = $this;
 					$this->_sections[$section]['fields'][] = $field_options['name'];
-					$this->_options[$field_options['name']] = new $field_class( $this->_app, $field_options );
+					$this->_options[$field_options['name']] = new $field_class( $this->_fields_base, $field_options );
 				} else {
 					throw new \Exception( sprintf( __( "csframework\Settings: Unknown field type `%s`", 'coolascript-framework' ), $type ) );
 				}
@@ -299,6 +298,7 @@ class Settings extends Base
 	 */
 	public function render()
 	{
+		//var_dump(get_option( $this->_name, false ));
 		add_action( 'admin_menu', array( $this, 'addSettingsPage' ) );
 		add_action( 'admin_init', array( $this, 'init' ) );
 		add_action( 'admin_notices', array( $this, 'settingsNotice' ) );
