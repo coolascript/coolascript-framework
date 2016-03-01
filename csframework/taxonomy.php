@@ -23,6 +23,11 @@ class Taxonomy
 	 */
 	protected $_fields = array();
 	/**
+	 * Taxonomy custom fields values array
+	 * @var array
+	 */
+	protected $_values = array();
+	/**
 	 * Post type slug for which you'd like to create taxonomy
 	 * @var string|null
 	 */
@@ -106,6 +111,7 @@ class Taxonomy
 			$this->name = $term->name;
 			$this->description = $term->description;
 
+			$this->_values = get_option( "tax_" . static::$taxonomy . "_{$this->id}", array() );
 			foreach ($this->_fields as $name => $field) {
 				$this->$name = $this->getFieldValue( $name );
 			}
@@ -175,8 +181,7 @@ class Taxonomy
 	{
 		if ( isset( $this->_fields[( string ) $name] ) && $this->id ) {
 			$field = $this->_fields[( string ) $name];
-			$values = get_option( "tax_" . static::$taxonomy . "_{$this->id}", array() );
-			return isset( $values[$name] ) ? $values[$name] : $field->getDefault();
+			return isset( $this->_values[$name] ) ? $this->_values[$name] : $field->getDefault();
 		}
 		return null;
 	}
