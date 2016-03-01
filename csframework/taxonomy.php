@@ -96,9 +96,9 @@ class Taxonomy
 	{
 		$term = false;
 		if ( is_int( $id ) ) {
-			$term = get_term_by( 'id', $id, self::$taxonomy );
+			$term = get_term_by( 'id', $id, static::$taxonomy );
 		} elseif ( is_string( $id ) ) {
-			$term = get_term_by( 'slug', $id, self::$taxonomy );
+			$term = get_term_by( 'slug', $id, static::$taxonomy );
 		}
 		if ( $term ) {
 			$term = get_term( $term, self::$taxonomy );
@@ -175,7 +175,8 @@ class Taxonomy
 	{
 		if ( isset( $this->_fields[( string ) $name] ) && $this->id ) {
 			$field = $this->_fields[( string ) $name];
-			return get_option( "tax_" . static::$taxonomy . "_{$this->id}_{$name}", $field->getDefault() );
+			$values = get_option( "tax_" . static::$taxonomy . "_{$this->id}", array() );
+			return isset( $values[$name] ) ? $values[$name] : $field->getDefault();
 		}
 		return null;
 	}
@@ -208,14 +209,15 @@ class Taxonomy
 		?>		
 		<?php foreach ( $this->_fields as $name => $field ): ?>
 			<?php
+			$this->load( ( int ) $term->term_id );
 			$field
 				->setShow_label( false )
-				->setValue( get_option( "tax_" . static::$taxonomy . "_{$term->term_id}_{$name}", $field->getDefault() ) );
+				->setValue( $this->getFieldValue( $name ) );
 			?>
 			<tr class="form-field term-name-wrap">
 				<th scope="row">
 					<?php if ( $field->getType() != 'checkbox' ): ?>
-						<label for="<?php echo esc_attr( $field->getInputId() ); ?>"><?php echo wp_kses_post( $field->getLabel() ); ?></label>
+						<label for="<?php echo esc_attr( $field->getInputId() ); ?>"><?php echo apply_filters( 'the_title', $field->getLabel() ); ?></label>
 					<?php endif ?>
 				</th>
 				<td>
@@ -252,12 +254,10 @@ class Taxonomy
 	 */
 	public function onSave( $term_id )
 	{
-		foreach ( $this->_fields as $name => $field ) {
-			if ( isset( $_REQUEST[$this->_fields_base][static::$taxonomy][$name] ) ) {
-				update_option( "tax_" . static::$taxonomy . "_{$term_id}_{$name}", $_REQUEST[$this->_fields_base][static::$taxonomy][$name] );
-			} else {
-				delete_option( "tax_" . static::$taxonomy . "_{$term_id}_{$name}" );
-			}
+		if ( isset( $_REQUEST[$this->_fields_base][static::$taxonomy] ) ) {
+			update_option( "tax_" . static::$taxonomy . "_{$term_id}", $_REQUEST[$this->_fields_base][static::$taxonomy] );
+		} else {
+			delete_option( "tax_" . static::$taxonomy . "_{$term_id}" );
 		}
 	}
 
