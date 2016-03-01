@@ -127,10 +127,10 @@ class PosttypeMetabox extends Base
 	public function setFields( $val )
 	{
 		if ( is_array( $val ) ) {
-			foreach ($val as $name => $field) {
+			foreach ( $val as $name => $field ) {
 				if ( is_array( $field ) ) {
 					if ( isset( $field['type'] ) ) {
-						$field_class = 'csframework\Field' . ucfirst($field['type']);
+						$field_class = 'csframework\Field' . ucfirst( $field['type'] );
 						if ( class_exists( $field_class ) ) {
 							$field['name'] = $name;
 							$field['parent'] = $this;
@@ -140,7 +140,7 @@ class PosttypeMetabox extends Base
 							
 						}
 					}
-				}elseif ( is_object( $field )) {
+				} elseif ( is_object( $field ) ) {
 					$field->setName( $name );
 					$field->setParent( $this );
 					$this->_fields[$name] = $field;
@@ -182,7 +182,6 @@ class PosttypeMetabox extends Base
 			$this->_post_type,								// post type
 			$this->_context,								// context
 			$this->_priority								// priority
-			//$this->_fields									// fields
 		);
 		return $this;
 	}
@@ -196,7 +195,7 @@ class PosttypeMetabox extends Base
 	{
 		?>
 		<div class="csframework-metabox">
-		<?php foreach ($this->_fields as $name => $field): ?>
+		<?php foreach ( $this->_fields as $name => $field ): ?>
 			<?php $value = get_post_meta( $post->ID, $name, true ) ?>
 			<?php $field->setValue( $value ); ?>
 			<div class="csframework-field-row">

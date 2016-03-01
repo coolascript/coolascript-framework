@@ -162,23 +162,13 @@ class Posttype
 	 */
 	public function onSave( $post_id )
 	{
-		if ( ( isset( $_POST['post_type'] ) && self::$post_type == $_POST['post_type'] ) && ( !isset( $_POST['post_view'] ) || $_POST['post_view'] != 'list' ) ) {
-			if ( isset( $_REQUEST[$this->_fields_base] ) ) {
-				foreach ( $_REQUEST[$this->_fields_base] as $metabox => $fields ) {
-					if ( isset( $this->_metaboxes[$metabox] ) ) {
-						foreach ( $fields as $key => $value ) {
-							if ( $field = $this->_metaboxes[$metabox]->getField( $key ) ) {
-								$field->setValue( $value );
-							}
-						}
-					}
-				}
-			}
-
-			if ( $this->_metaboxes ) {
-				foreach ( $this->_metaboxes as $box_slug => $metabox ) {
-					foreach ( $metabox->getFields() as $field_name => $field ) {
-						update_post_meta( $post_id, $field_name, $field->getValue() );
+		if ( ( isset( $_POST['post_type'] ) && self::$post_type == $_POST['post_type'] ) && ( !isset( $_POST['post_view'] ) || $_POST['post_view'] != 'list' ) && $this->_metaboxes && isset( $_REQUEST[$this->_fields_base] ) ) {
+			foreach ( $this->_metaboxes as $box_slug => $metabox ) {
+				foreach ( $metabox->getFields() as $field_name => $field ) {
+					if ( isset( $_REQUEST[$this->_fields_base][$box_slug][$field_name] ) ) {
+						update_post_meta( $post_id, $field_name, $_REQUEST[$this->_fields_base][$box_slug][$field_name] );
+					} else {
+						delete_post_meta( $post_id, $field_name );
 					}
 				}
 			}
