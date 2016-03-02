@@ -10,10 +10,6 @@ abstract class Widget extends \WP_Widget
 	 * @var array
 	 */
 	private $_fields = array();
-	/**
-	 * @var csframework\Csframework|null
-	 */
-	protected $_fields_base = null;
 	
 	public function __construct( $id_base, $name, $widget_options = array(), $control_options = array() )
 	{
@@ -30,17 +26,6 @@ abstract class Widget extends \WP_Widget
 	}
 
 	/**
-	 * Set widget fields base name
-	 * @param string $base_name Application main class instance
-	 * @return csframework\Widget
-	 */
-	public function setFieldsBase( $base_name )
-	{
-		$this->_fields_base = $base_name;
-		return $this;
-	}
-
-	/**
 	 * Adds a new field. Possible field types: text, textarea, select, multiselect, checkbox, checkboxes, radio, file
 	 * @param array $args Field settings. Key based array. Possible keys: type, name, label, default, values, filetype
 	 */
@@ -54,7 +39,11 @@ abstract class Widget extends \WP_Widget
 
 	function update( $new_instance, $instance ) {
 		foreach ( $this->_fields as $name => $field ) {
-			$instance[$name] = isset( $new_instance[$name] ) ? $new_instance[$name] : '';
+			if ( in_array( $field['type'], array( 'multiselect', 'checkboxes' ) ) ) {
+				$instance[$name] = isset( $new_instance[$name] ) ? ( array ) $new_instance[$name] : null;
+			} else {
+				$instance[$name] = isset( $new_instance[$name] ) ? ( string ) $new_instance[$name] : null;
+			}
 		}
 		return $instance;
 	}
@@ -78,15 +67,15 @@ abstract class Widget extends \WP_Widget
 					<textarea id="<?php echo esc_attr( $this->get_field_id( $name ) ); ?>" class="widefat" name="<?php echo esc_attr( $this->get_field_name( $name ) ); ?>"><?php echo esc_textarea( $value ); ?></textarea>
 				<?php endif ?>
 				<?php if ( $field['type'] == 'radio' ): ?>
-					<?php $value = empty( $instance[$name] ) ? ( isset( $field['default'] ) ? ( string ) $field['default'] : '' ) : ( string ) $instance[$name] ?>
+					<?php $value = is_null( $instance[$name] ) ? ( isset( $field['default'] ) ? ( string ) $field['default'] : null ) : ( string ) $instance[$name] ?>
 					<?php if ( $field['values'] && is_array( $field['values'] ) ): ?>
 						<?php if ( isset( $field['label'] ) ): ?>
 							<h4><?php echo apply_filters( 'csframework_widget_field_label', $field['label'] ); ?></h4>
 						<?php endif ?>
 						<ul class="options-list">
-						<?php $i = 1; foreach ($field['values'] as $val => $label): ?>
+						<?php $i = 1; foreach ( $field['values'] as $val => $label ): ?>
 							<li>
-								<input type="radio" id="<?php echo esc_attr( $this->get_field_id( $name ) . '-' . $i ); ?>" name="<?php echo esc_attr( $this->get_field_name( $name ) ); ?>" value="<?php echo esc_attr( $val ); ?>" <?php checked( $val, $value ); ?>>
+								<input type="radio" id="<?php echo esc_attr( $this->get_field_id( $name ) . '-' . $i ); ?>" name="<?php echo esc_attr( $this->get_field_name( $name ) ); ?>" value="<?php echo esc_attr( $val ); ?>" <?php checked( ( string ) $val, ( string ) $value ); ?>>
 								<label for="<?php echo esc_attr( $this->get_field_id( $name ) . '-' . $i ); ?>"><?php echo apply_filters( 'csframework_widget_field_radio_label', $label ); ?></label>
 							</li>
 						<?php $i++; endforeach ?>
@@ -94,27 +83,28 @@ abstract class Widget extends \WP_Widget
 					<?php endif ?>
 				<?php endif ?>
 				<?php if ( $field['type'] == 'select' ): ?>
-					<?php $value = empty( $instance[$name] ) ? ( isset( $field['default'] ) ? ( string ) $field['default'] : '' ) : ( string ) $instance[$name] ?>
+					<?php $value = is_null( $instance[$name] ) ? ( isset( $field['default'] ) ? ( string ) $field['default'] : null ) : ( string ) $instance[$name] ?>
 					<?php if ( $field['values'] && is_array( $field['values'] ) ): ?>
 						<?php if ( isset( $field['label'] ) ): ?>
 							<label for="<?php echo esc_attr( $this->get_field_id( $name ) ); ?>"><?php echo apply_filters( 'csframework_widget_field_label', $field['label'] ); ?></label>
 						<?php endif ?>
 						<select id="<?php echo esc_attr( $this->get_field_id( $name ) ); ?>" class="widefat" name="<?php echo esc_attr( $this->get_field_name( $name ) ); ?>">
-						<?php $i = 1; foreach ($field['values'] as $val => $label): ?>
-							<option value="<?php echo esc_attr( $val ); ?>" <?php selected( $val, $value); ?>><?php echo apply_filters( 'csframework_widget_field_option', $label ); ?></option>
-						<?php $i++; endforeach ?>
+						<?php foreach ( $field['values'] as $val => $label ): ?>
+							<option value="<?php echo esc_attr( $val ); ?>" <?php selected( ( string ) $val, ( string ) $value ); ?>><?php echo apply_filters( 'csframework_widget_field_option', $label ); ?></option>
+						<?php endforeach ?>
 						</select>
 					<?php endif ?>
 				<?php endif ?>
-				<?php if ( $field['type'] == 'mulltiselect' ): ?>
-					<?php $value = ! $instance[$name] ? ( $field['default'] ? (array) $field['default'] : array() ) : $instance[$name] ?>
+				<?php if ( $field['type'] == 'multiselect' ): ?>
+					<?php $value = is_null( $instance[$name] ) ? ( $field['default'] ? ( array ) $field['default'] : array() ) : ( array ) $instance[$name] ?>
 					<?php if ( $field['values'] && is_array( $field['values'] ) ): ?>
 						<?php if ( isset( $field['label'] ) ): ?>
 							<label for="<?php echo esc_attr( $this->get_field_id( $name ) ); ?>"><?php echo apply_filters( 'csframework_widget_field_label', $field['label'] ); ?></label>
 						<?php endif ?>
-						<select id="<?php echo esc_attr( $this->get_field_id( $name ) ); ?>" class="widefat" name="<?php echo esc_attr( $this->get_field_name( $name ) ); ?>" multiple>
-						<?php $i = 1; foreach ($field['values'] as $val => $label): ?>
-							<option value="<?php echo esc_attr( $val ); ?>" <?php selected( true, in_array( $val, $value ) ); ?>><?php echo apply_filters( 'csframework_widget_field_option', $label ); ?></option>
+						<input type="hidden" name="<?php echo esc_attr( $this->get_field_name( $name ) ); ?>[]" value="--no-value--">
+						<select id="<?php echo esc_attr( $this->get_field_id( $name ) ); ?>" class="widefat" name="<?php echo esc_attr( $this->get_field_name( $name ) ); ?>[]" multiple>
+						<?php $i = 1; foreach ( $field['values'] as $val => $label ): ?>
+							<option value="<?php echo esc_attr( $val ); ?>" <?php selected( true, in_array( ( string ) $val, $value, true ) ); ?>><?php echo apply_filters( 'csframework_widget_field_option', $label ); ?></option>
 						<?php $i++; endforeach ?>
 						</select>
 					<?php endif ?>
@@ -126,7 +116,7 @@ abstract class Widget extends \WP_Widget
 				<?php endif ?>
 				<?php if ( $field['type'] == 'file' ): ?>
 					<?php
-					$value = isset( $instance[$name] ) ? $instance[$name] : 0;
+					$value = !is_null( $instance[$name] ) ? ( int ) $instance[$name] : 0;
 					$upload_link = esc_url( get_upload_iframe_src( $field['filetype'], null, 'type' ) );
 					$file_src = wp_get_attachment_url( $value );
 					$have_file = !empty( $file_src );
@@ -134,60 +124,63 @@ abstract class Widget extends \WP_Widget
 					<?php if ( isset( $field['label'] ) ): ?>
 						<h4><?php echo apply_filters( 'csframework_widget_field_label', $field['label'] ); ?></h4>
 					<?php endif ?>
-					<div class="file-field" data-type="<?php echo esc_attr( $field['filetype'] ); ?>">
-						<div class="file-container">
-							<?php if ( $have_file ) {
-								switch ( $field['filetype'] ) {
-									case 'image':
-										?>
-										<img src="<?php echo esc_url( $file_src ); ?>" alt="" />
-										<?php
-										break;
+					<div class="csframework-field csframework-field-file">
+						<div class="csframework-file-field" data-type="<?php echo esc_attr( $field['filetype'] ); ?>">
+							<div class="csframework-file-container">
+								<?php if ( $have_file ) {
+									switch ( $field['filetype'] ) {
+										case 'image':
+											?>
+											<img src="<?php echo esc_attr( $file_src ); ?>" alt="" />
+											<?php
+											break;
 
-									case 'audio':
-										echo wp_audio_shortcode( array(
-											'src' => $file_src
-										) );
-										break;
+										case 'audio':
+											echo wp_audio_shortcode( array(
+												'src' => $file_src
+											) );
+											break;
 
-									case 'video':
-										echo wp_video_shortcode( array(
-											'src' => $file_src
-										) );
-										break;
+										case 'video':
+											echo wp_video_shortcode( array(
+												'src' => $file_src
+											) );
+											break;
 
-									default:
-										$filename = basename( get_attached_file( $value ) );
-										echo wp_get_attachment_image( $value, array( 75, 75 ) );
-										?>
-										<span class="dashicons dashicons-media-default"></span>
-										<span class="file-name"><?php echo esc_attr( $filename ); ?></span>
-										<?php
-										break;
-								}
-							} 
-							?>
+										default:
+											$filename = basename( get_attached_file( $value ) );
+											echo wp_get_attachment_image( $value, array( 75, 75 ) );
+											?>
+											<span class="dashicons dashicons-media-default"></span>
+											<span class="file-name"><?php echo apply_filters( 'the_content', $filename ); ?></span>
+											<?php
+											break;
+									}
+								} 
+								?>
+							</div>
+							<div class="file-error error-filetype hidden"><?php _e( 'Wrong file type', 'coolascript-framework' ) ?></div>
+							<p class="hide-if-no-js">
+								<a class="button add-file<?php echo esc_attr( $have_file ? ' hidden' : '' ); ?>" href="<?php echo esc_url( $upload_link ); ?>">
+									<?php _e( 'Set file', 'coolascript-framework' ) ?>
+								</a>
+								<a class="button delete-file<?php echo ! $have_file ? ' hidden' : '' ?>" href="#">
+									<?php _e( 'Remove file', 'coolascript-framework' ) ?>
+								</a>
+							</p>
+							<input class="file-id" id="<?php echo esc_attr( $this->get_field_id( $name ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $name ) ); ?>" type="hidden" value="<?php echo esc_attr( $value ); ?>" />
 						</div>
-						<div class="file-error error-filetype hidden"><?php _e( 'Wrong file type', 'coolascript-framework' ) ?></div>
-						<p class="hide-if-no-js">
-							<a class="button add-file<?php echo esc_attr( $have_file ? ' hidden' : '' ); ?>" href="<?php echo esc_url( $upload_link ); ?>">
-								<?php _e( 'Set file', 'coolascript-framework' ) ?>
-							</a>
-							<a class="button delete-file<?php echo ! $have_file ? ' hidden' : '' ?>" href="#">
-								<?php _e( 'Remove file', 'coolascript-framework' ) ?>
-							</a>
-						</p>
-						<input class="file-id" id="<?php echo esc_attr( $this->get_field_id( $name ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $name ) ); ?>" type="hidden" value="<?php echo esc_attr( $value ); ?>" />
 					</div>
 				<?php endif ?>
 				<?php if ( $field['type'] == 'checkboxes' ): ?>
-					<?php $value = ! $instance[$name] ? ( $field['default'] ? (array) $field['default'] : array() ) : $instance[$name] ?>
+					<?php $value = is_null( $instance[$name] ) ? ( $field['default'] ? ( array ) $field['default'] : array() ) : ( array ) $instance[$name] ?>
 					<?php if ( $field['values'] && is_array( $field['values'] ) ): ?>
 						<?php if ( isset( $field['label'] ) ): ?>
 							<h4><?php echo apply_filters( 'csframework_widget_field_label', $field['label'] ); ?></h4>
 						<?php endif ?>
+						<input type="hidden" name="<?php echo esc_attr( $this->get_field_name( $name ) ); ?>[]" value="--no-value--">
 						<?php $i = 1; foreach ( $field['values'] as $val => $label ): ?>
-							<input type="checkbox" id="<?php echo esc_attr( $this->get_field_id( $name ) . '-' . $i ); ?>" name="<?php echo esc_attr( $this->get_field_name( $name ) ); ?>[]" value="<?php echo esc_attr( $val ); ?>" <?php checked( true, in_array( $val, $value ) ); ?>>
+							<input type="checkbox" id="<?php echo esc_attr( $this->get_field_id( $name ) . '-' . $i ); ?>" name="<?php echo esc_attr( $this->get_field_name( $name ) ); ?>[]" value="<?php echo esc_attr( $val ); ?>" <?php checked( true, in_array( ( string ) $val, $value, true ) ); ?>>
 							<label for="<?php echo esc_attr( $this->get_field_id( $name ) . '-' . $i ); ?>"><?php echo apply_filters( 'csframework_widget_field_checkbox_label', $label ); ?></label>
 						<?php $i++; endforeach ?>
 					<?php endif ?>
@@ -208,7 +201,7 @@ abstract class Widget extends \WP_Widget
 	 * Don't forget do parent::addAdminAssets();
 	 */
 	public function addAdminAssets() {
-		wp_enqueue_script( 'csframework-upload' );
+		wp_enqueue_script( 'csframework-admin-upload' );
 	}
 
 	/**
@@ -217,6 +210,9 @@ abstract class Widget extends \WP_Widget
 	 */
 	public function addLoginAssets() {}
 
+	/**
+	 * Ajax action on file uploaded
+	 */
 	public function ajaxFile()
 	{
 		$type = $_POST['type'];
@@ -246,7 +242,7 @@ abstract class Widget extends \WP_Widget
 				$filename = basename( get_attached_file( $id ) );
 				?>
 				<span class="dashicons dashicons-media-default"></span>
-				<span class="file-name"><?php echo esc_attr( $filename ); ?></span>
+				<span class="file-name"><?php echo wp_kses_post( $filename ); ?></span>
 				<?php
 				break;
 		}

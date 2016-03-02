@@ -110,9 +110,7 @@ class FieldFile extends Field
 				</p>
 				<input class="file-id<?php echo esc_attr( $this->_class ? ' ' . $this->_class : '' ); ?>" id="<?php echo esc_attr( $this->getInputId() ); ?>" name="<?php echo esc_attr( $this->getInputName() ); ?>" type="hidden" value="<?php echo esc_attr( $this->_value ); ?>" />
 				<?php if ( $this->_description ): ?>
-					<div class="field-description">
-						<?php echo wp_kses_post( $this->_description ); ?>
-					</div>
+					<?php echo apply_filters( 'the_content', $this->_description ); ?>
 				<?php endif ?>
 			</div>
 		</div>

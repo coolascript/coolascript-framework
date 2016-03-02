@@ -136,7 +136,6 @@ class Csframework
 						$class_name = $this->getNamespace() . '\Widget' . ucfirst( basename( $entry, '.php' ) );
 						if ( class_exists( $class_name ) ) {
 							register_widget( $class_name );
-							$wp_widget_factory->widgets[$class_name]->setFieldsBase( $this->_fields_var );
 						}
 					}
 				}
