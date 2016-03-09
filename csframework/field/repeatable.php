@@ -125,7 +125,7 @@ class FieldRepeatable extends Field
 		?>
 		<div class="csframework-field csframework-field-repeatable<?php echo esc_attr( $this->_depend ? ' csframework-depend-field' : '' ); ?><?php echo esc_attr( $this->isRequired() ? ' csframework-required' : '' ); ?>"<?php echo ( bool ) $this->_depend ? ' data-depend="' . esc_attr( implode( ';', $this->getDependecies() ) ) . '"' : ''; ?>>
 			<?php if ( $this->_label && $this->_show_label ): ?>
-				<h5 class="label"><?php echo apply_filters( 'the_title', $this->_label ); ?><?php echo ( $this->isRequired() ? ' <em>*</em>' : '' ); ?></h5>
+				<h5 class="csframework-label"><?php echo apply_filters( 'the_title', $this->_label ); ?><?php echo ( $this->isRequired() ? ' <em>*</em>' : '' ); ?></h5>
 			<?php endif ?>
 			<div id="<?php echo esc_attr( $this->getInputId() ); ?>" class="csframework-subfields csframework-sortable" data-rows="<?php echo sizeof( $this->_value ); ?>">
 			<?php if ( $this->_value ): ?>

@@ -59,7 +59,7 @@ class FieldMap extends Field
 		<div class="csframework-field csframework-field-map<?php echo esc_attr( $this->_depend ? ' csframework-depend-field' : '' ); ?><?php echo esc_attr( $this->isRequired() ? ' csframework-required' : '' ); ?>"<?php echo ( bool ) $this->_depend ? ' data-depend="' . esc_attr( implode( ';', $this->getDependecies() ) ) . '"' : ''; ?>>
 			<div class="csframework-map-field">
 				<?php if ( $this->_label && $this->_show_label ): ?>
-					<h5 class="label"><?php echo apply_filters( 'the_title', $this->_label ); ?>:<?php echo ( $this->isRequired() ? ' <em>*</em>' : '' ); ?></h5>
+					<h5 class="csframework-label"><?php echo apply_filters( 'the_title', $this->_label ); ?>:<?php echo ( $this->isRequired() ? ' <em>*</em>' : '' ); ?></h5>
 				<?php endif ?>
 				<input type="hidden" name="<?php echo esc_attr( $this->getInputName() ); ?>[lat]" id="<?php echo esc_attr( $this->getInputId() ); ?>-lat" value="<?php echo esc_attr( !is_null( $this->_value ) && isset( $this->_value['lat'] ) ? $this->_value['lat'] : $this->_default ); ?>" class="lat" />
 				<input type="hidden" name="<?php echo esc_attr( $this->getInputName() ); ?>[lng]" id="<?php echo esc_attr( $this->getInputId() ); ?>-lng" value="<?php echo esc_attr( !is_null( $this->_value ) && isset( $this->_value['lng'] ) ? $this->_value['lng'] : $this->_default['lng'] ); ?>" class="lng" />

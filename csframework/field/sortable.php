@@ -119,7 +119,7 @@ class FieldSortable extends Field
 		?>
 		<div class="csframework-field csframework-field-sortable<?php echo esc_attr( $this->_depend ? ' csframework-depend-field' : '' ); ?>"<?php echo ( bool ) $this->_depend ? ' data-depend="' . esc_attr( implode( ';', $this->getDependecies() ) ) . '"' : ''; ?>>
 			<?php if ( $this->_label && $this->_show_label ): ?>
-				<h4><?php echo apply_filters( 'the_title', $this->_label ); ?></h4>
+				<h4 class="csframework-label"><?php echo apply_filters( 'the_title', $this->_label ); ?></h4>
 			<?php endif ?>
 			<div id="<?php echo esc_attr( $this->getInputId() ); ?>" class="csframework-sortable-fields csframework-sortable">
 			<?php if ( $this->_fields ): ?>

@@ -402,7 +402,7 @@ abstract class Field extends Base
 				break;
 			
 			default:
-				return sanitize_text_field( $val );
+				return $val;
 				break;
 		}
 	}

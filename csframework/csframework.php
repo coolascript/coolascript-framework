@@ -344,13 +344,6 @@ class Csframework
 			'1.0.0',
 			true
 		);
-		/*wp_register_script(
-			'csframework-wysiwyg-field',
-			CSFRAMEWORK_PLUGIN_URL . 'assets/js/wysiwyg.js',
-			array( 'jquery', 'editor' ),
-			'1.0.0',
-			true
-		);*/
 
 	}
 
@@ -359,7 +352,104 @@ class Csframework
 	 * Don't forget do parent::addAdminAssets();
 	 */
 	public function addAdminAssets() {
-		$this->addAssets();
+		wp_register_style(
+			'csframework-admin',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/css/admin-style.css',
+			array(),
+			'1.0.0'
+		);
+		wp_register_style(
+			'csframework-jquery-ui-theme',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/css/jquery-ui.theme.min.css',
+			array(),
+			'1.11.4'
+		);
+		wp_register_style(
+			'csframework-jquery-ui-structure',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/css/jquery-ui.structure.min.css',
+			array(),
+			'1.11.4'
+		);
+		wp_register_style(
+			'csframework-jquery-ui',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/css/jquery-ui.min.css',
+			array( 'csframework-jquery-ui-theme', 'csframework-jquery-ui-structure' ),
+			'1.11.4'
+		);
+		wp_register_style(
+			'iris',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/css/iris.min.css',
+			array(),
+			'1.0.7'
+		);
+		wp_register_style(
+			'csframework-sortable-field',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/css/sortable.css',
+			array(),
+			'1.0.0'
+		);
+		wp_register_style(
+			'csframework-repeatable-field',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/css/repeatable.css',
+			array( 'csframework-sortable-field' ),
+			'1.0.0'
+		);
+		wp_register_script(
+			'csframework-ajax-form',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/ajax-form.js',
+			array( 'jquery' ),
+			'1.0.0',
+			true
+		);
+		wp_register_script(
+			'csframework-sortable-field',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/sortable.js',
+			array( 'jquery', 'jquery-ui-core', 'jquery-ui-draggable', 'jquery-ui-sortable' ),
+			'1.0.0',
+			true
+		);
+		wp_register_script(
+			'csframework-repeatable-field',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/repeatable.js',
+			array( 'csframework-sortable-field' ),
+			'1.0.0',
+			true
+		);
+		wp_register_script(
+			'csframework-date-field',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/date.js',
+			array( 'jquery', 'jquery-ui-datepicker' ),
+			'1.0.0',
+			true
+		);
+		wp_register_script(
+			'csframework-field',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/field.js',
+			array( 'jquery' ),
+			'1.0.0',
+			true
+		);
+		wp_register_script(
+			'csframework-accordion',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/accordion-init.js',
+			array( 'jquery' ),
+			'1.0.0',
+			true
+		);
+		wp_register_script(
+			'iris',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/iris.min.js',
+			array( 'jquery-ui-draggable', 'jquery-ui-slider' ),
+			'1.0.7',
+			true
+		);
+		wp_register_script(
+			'csframework-color-field',
+			CSFRAMEWORK_PLUGIN_URL . 'assets/js/colorpicker-init.js',
+			array( 'iris' ),
+			'1.0.0',
+			true
+		);
 		wp_register_script(
 			'csframework-admin-upload',
 			CSFRAMEWORK_PLUGIN_URL . 'assets/js/admin-upload.js',
@@ -368,6 +458,8 @@ class Csframework
 			true
 		);
 		wp_localize_script( 'csframework-admin-upload', 'csframework', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
+
+		wp_enqueue_style( 'csframework-admin' );
 	}
 
 	/**
