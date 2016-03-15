@@ -13,7 +13,7 @@ class FieldWysiwyg extends Field
 	 */
 	function __construct( $fields_base_name, $args )
 	{
-		$this->setSanitize( 'textarea' );
+		//$this->setSanitize( 'textarea' );
 		parent::__construct( $fields_base_name, $args );
 	}
 

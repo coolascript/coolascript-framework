@@ -88,7 +88,7 @@ abstract class Field extends Base
 			$parents = array();
 			if ( isset( $args['parent'] ) ) {
 				$parent = $args['parent'];
-				while ( !is_null( $parent ) && get_class( $parent ) != 'PosttypeMetabox' ) {
+				while ( !is_null( $parent ) && method_exists( $parent, 'getName' ) ) {
 					$parents[] = $parent->getName();
 					$parent = method_exists( $parent, 'getParent' ) ? $parent->getParent() : null;
 				}
