@@ -176,7 +176,7 @@ class Csframework
 	{
 		$dirs = $this->_autoloader->getIncludePaths();
 		foreach ( $dirs as $dir ) {
-			if ( file_exists( $dir . 'taxonomy' ) && $handle = opendir( $dir . 'posttype' ) ) {
+			if ( file_exists( $dir . 'posttype' ) && $handle = opendir( $dir . 'posttype' ) ) {
 				while ( false !== ( $entry = readdir( $handle ) ) ) {
 					if ( is_file( $dir . 'posttype/' . $entry ) ) {
 						$class_name = $this->getNamespace() . '\Posttype' . ucfirst( basename( $entry, '.php' ) );
@@ -291,7 +291,7 @@ class Csframework
 		wp_register_script(
 			'csframework-ajax-form',
 			CSFRAMEWORK_PLUGIN_URL . 'assets/js/ajax-form.js',
-			array( 'jquery' ),
+			array( 'jquery-form' ),
 			'1.0.0',
 			true
 		);
