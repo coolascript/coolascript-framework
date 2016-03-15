@@ -49,15 +49,9 @@ class Settings extends Base
 	 * @var array
 	 */
 	protected $_options = array();
-	/**
-	 * Settings fields base name
-	 * @var string
-	 */
-	protected $_fields_base = 'csframework';
 
 	/**
 	 * Instantiate Settings object
-	 * @param string $fields_base_name        Settings fields base name
 	 * @param string $title      Settings page and menu title
 	 * @param string $name       Settings page slug, option group and option name
 	 * @param string $capability The capability required for this menu to be displayed to the user
@@ -66,14 +60,13 @@ class Settings extends Base
 
 	 * @param int $position   The position in the menu order this one should appear
 	 */
-	function __construct( $fields_base_name, $title, $name, $capability = 'activate_plugins', $parent = null, $icon_url = '', $position = null ) {
-		$this->_fields_base = $fields_base_name;
+	function __construct( $title, $name, $capability = 'activate_plugins', $icon_url = '', $position = null, $parent = null ) {
 		$this->_name = sanitize_title( $name );
 		$this->_title = apply_filters( 'the_title', $title );
 		$this->_capability = ( string ) $capability;
-		$this->_parent = $parent;
 		$this->_icon = ( string ) $icon_url;
 		$this->_position = $position;
+		$this->_parent = $parent;
 	}
 
 	/**
@@ -96,7 +89,7 @@ class Settings extends Base
 	 */
 	public function init()
 	{
-		register_setting( $this->_name, $this->_fields_base, array( $this, 'sanitize' ) );
+		register_setting( $this->_name, $this->_name, array( $this, 'sanitize' ) );
 		
 		foreach ( $this->_sections as $slug => $section ) {
 			add_settings_section( $slug, $section['name'], array( $this, 'renderSection' ), $this->_name );
@@ -114,21 +107,16 @@ class Settings extends Base
 	 */
 	public function sanitize( $val )
 	{
-		$errors = false;
-		foreach ( $val[$this->_name] as $key => $value ) {
+		foreach ( $val as $key => $value ) {
 			if ( $this->_options[$key]->isRequired() && !$value ) {
 				add_settings_error( $this->_name, $this->_name . '_error_' . $key . '_required', sprintf( __( 'Field `%s` is required!', 'coolascript-framework' ), $this->_options[$key]->getLabel() ), 'error' );
-				$errors = true;
+				$val[$key] = '';
 			} elseif ( $this->_options[$key]->getType() == 'email' && !empty( $value ) && !is_email( $value ) ) {
 				add_settings_error( $this->_name, $this->_name . '_error_' . $key . '_wrong_email', sprintf( __( '`%s` is not valid email address!', 'coolascript-framework' ), $this->_options[$key]->getLabel() ), 'error' );
-				$errors = true;
+				$val[$key] = '';
 			}
 		}
-		if ( !$errors && ( update_option( $this->_name, $val[$this->_name] ) || get_option( $this->_name ) == $val[$this->_name] ) ) {
-			add_settings_error( $this->_name, $this->_name . '_notice', __( 'Settings saved', 'coolascript-framework' ), 'updated' );
-		} elseif( !$errors ) {
-			add_settings_error( $this->_name, $this->_name . '_error', __( 'Something went wrong!', 'coolascript-framework' ), 'error' );
-		}
+		return  $val;
 	}
 
 	/**
@@ -166,17 +154,19 @@ class Settings extends Base
 	{
 		if ( is_array( $field_options ) ) {
 			if ( isset( $this->_sections[$section] ) && !isset( $this->_options[$field_options['name']] ) ) {
+				$field_options['show_label'] = false;
 				$field_class = 'csframework\Field' . ucfirst( $field_options['type'] );
 				if ( class_exists( $field_class ) ) {
 					$field_options['parent'] = $this;
 					$this->_sections[$section]['fields'][] = $field_options['name'];
-					$this->_options[$field_options['name']] = new $field_class( $this->_fields_base, $field_options );
+					$this->_options[$field_options['name']] = new $field_class( $this->_name, $field_options );
 				} else {
 					throw new \Exception( sprintf( __( "csframework\Settings: Unknown field type `%s`", 'coolascript-framework' ), $type ) );
 				}
 			}
 		} elseif ( is_object( $field_options ) ) {
 			if ( isset( $this->_sections[$section] ) && !isset( $this->_options[$field_options->getName()] ) ) {
+				$field_options->setShow_label( false );
 				$field_options->setParent( $this );
 				$this->_sections[$section]['fields'][] = $field_options->getName();
 				$this->_options[$field_options->getName()] = $field_options;
@@ -216,10 +206,10 @@ class Settings extends Base
 	 * Retriev Settings name
 	 * @return string Settings page slug, Settings group and option name
 	 */
-	public function getName()
+	/*public function getName()
 	{
 		return $this->_name;
-	}
+	}*/
 
 	/**
 	 * Enqueue scripts and styles to settings page
@@ -231,34 +221,12 @@ class Settings extends Base
 		wp_enqueue_script( 'csframework-accordion' );
 	}
 
-	public function renderSection() {}
-
 	/**
 	 * Render settings section HTML
 	 * @param  string $slug Section slug
 	 */
-	protected function _renderSection( $slug ) {
-		?>
-			<h3 class="csframewoork-settings-section-title csframewoork-section-<?php echo esc_attr( $slug ); ?>">
-				<?php echo apply_filters( 'the_title', $this->_sections[$slug]['name'] ); ?>
-			</h3>
-			<div class="csframewoork-settings-section-fields csframewoork-section-<?php echo esc_attr( $slug ); ?>">
-				<ul class="csframewoork-settings-fields">
-				<?php foreach ($this->_sections[$slug]['fields'] as $field): ?>
-					<li class="csframewoork-settings-field">
-						<?php if ( $this->_options[$field]->getSanitize() == 'google_font' ): ?>
-							<?php $values = $this->_options[$field]->getValues() ?>
-							<?php $value = explode( ':', $this->getOptionValue( $field ) ) ?>
-							<?php $value = array_search( $value[0], $values ) ?>
-							<?php $this->_options[$field]->setValue( $value )->render() ?>
-						<?php else: ?>
-							<?php $this->_options[$field]->setValue( $this->getOptionValue( $field ) )->render() ?>
-						<?php endif ?>
-					</li>
-				<?php endforeach ?>
-				</ul>
-			</div>
-		<?php
+	public function renderSection() {
+		
 	}
 
 	/**
@@ -269,28 +237,17 @@ class Settings extends Base
 	{
 		?>
 		<div class="wrap">
+			<h2>
+				<?php echo get_admin_page_title(); ?>
+			</h2>
+			<?php settings_errors( $this->_name ); ?>
 			<form action="<?php echo admin_url( 'options.php' ); ?>" method="post" enctype="multipart/form-data">
-				<h2>
-					<?php echo get_admin_page_title(); ?>
-				</h2>
 				<?php settings_fields( $this->_name ); ?>
-				<div class="csframewoork-accordion">
-					<?php foreach ($this->_sections as $slug => $section): ?>
-						<?php $this->_renderSection( $slug ) ?>
-					<?php endforeach ?>
-				</div>
-				<input name="Submit" type="submit" class="button button-primary" value="<?php _e( 'Save Changes', 'coolascript-framework' ); ?>" />
+				<?php do_settings_sections( $this->_name ); ?>
+				<?php submit_button( __( 'Save Changes', 'coolascript-framework' ) ); ?>
 			</form>
 		</div>
 		<?php
-	}
-
-	/**
-	 * Show settings page messeges
-	 */
-	public function settingsNotice()
-	{
-		settings_errors( $this->_name );
 	}
 
 	/**
@@ -298,9 +255,7 @@ class Settings extends Base
 	 */
 	public function render()
 	{
-		//var_dump(get_option( $this->_name, false ));
 		add_action( 'admin_menu', array( $this, 'addSettingsPage' ) );
 		add_action( 'admin_init', array( $this, 'init' ) );
-		add_action( 'admin_notices', array( $this, 'settingsNotice' ) );
 	}
 }
