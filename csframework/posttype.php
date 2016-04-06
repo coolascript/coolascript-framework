@@ -86,8 +86,10 @@ class Posttype
 	 */
 	public function load( $id )
 	{
+		$posttype_class = get_called_class();
+		
 		$post = get_post( $id );
-		if ( $post && get_post_type( $post ) == self::$post_type ) {
+		if ( $post && get_post_type( $post ) == $posttype_class::$post_type ) {
 			$this->id = $post->ID;
 			$this->title = $post->post_title;
 			$this->content = $post->post_content;
@@ -101,7 +103,8 @@ class Posttype
 	 */
 	public function getSlug()
 	{
-		return ( string ) self::$post_type;
+		$posttype_class = get_called_class();
+		return ( string ) $posttype_class::$post_type;
 	}
 
 	/**
@@ -162,7 +165,9 @@ class Posttype
 	 */
 	public function onSave( $post_id )
 	{
-		if ( ( isset( $_POST['post_type'] ) && self::$post_type == $_POST['post_type'] ) && ( !isset( $_POST['post_view'] ) || $_POST['post_view'] != 'list' ) && $this->_metaboxes && isset( $_REQUEST[$this->_fields_base] ) ) {
+		$posttype_class = get_called_class();
+		
+		if ( ( isset( $_POST['post_type'] ) && $posttype_class::$post_type == $_POST['post_type'] ) && ( !isset( $_POST['post_view'] ) || $_POST['post_view'] != 'list' ) && $this->_metaboxes && isset( $_REQUEST[$this->_fields_base] ) ) {
 			foreach ( $this->_metaboxes as $box_slug => $metabox ) {
 				foreach ( $metabox->getFields() as $field_name => $field ) {
 					if ( isset( $_REQUEST[$this->_fields_base][$box_slug][$field_name] ) ) {
