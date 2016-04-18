@@ -16,7 +16,7 @@ if ( defined( 'CSFRAMEWORK_VERSION' ) ) {
 }
 ```
 # Adding new post type
-Create 'posttype\myposttype.php' dir in your project path:
+Create 'posttype\myposttype.php' file in your project path:
 ```
 <?php
 namespace myapp;
