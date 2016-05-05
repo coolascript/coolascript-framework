@@ -8,7 +8,6 @@ class Base
 	
 	public function __construct()
 	{
-		add_action( 'wp_ajax_file', array( $this, 'ajaxFile' ), 100 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'addAssets' ), 100 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'addAdminAssets' ), 100 );
 		add_action( 'login_enqueue_scripts', array( $this, 'addLoginAssets' ), 100 );

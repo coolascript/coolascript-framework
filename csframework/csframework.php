@@ -34,7 +34,6 @@ class Csframework
 	{
 		require_once __DIR__ . '/autoloader.php';
 		$this->_autoloader = new Autoloader;
-		add_action( 'wp_ajax_file', array( $this, 'ajaxFile' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'addAssets' ), 10 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'addAdminAssets' ), 10 );
 		add_action( 'login_enqueue_scripts', array( $this, 'addLoginAssets' ), 10 );
@@ -195,13 +194,75 @@ class Csframework
 	}
 
 	/**
+	 * Automaticly load all your comments modifications
+	 * @return csframework\Csframework
+	 */
+	private function _loadComments()
+	{
+		$dirs = $this->_autoloader->getIncludePaths();
+		foreach ( $dirs as $dir ) {
+			if ( file_exists( $dir . 'comment' ) && $handle = opendir( $dir . 'comment' ) ) {
+				while ( false !== ( $entry = readdir( $handle ) ) ) {
+					if ( is_file( $dir . 'comment/' . $entry ) ) {
+						$class_name = $this->getNamespace() . '\Comment' . ucfirst( basename( $entry, '.php' ) );
+						if ( class_exists( $class_name ) ) {
+							$class_name::getInstance()->setFieldsBase( $this->_fields_var );
+							if ( is_admin() ) {
+								$class_name::getInstance()->addMetaboxes();
+							}
+						}
+					}
+				}
+				closedir( $handle );
+			}
+		}
+		return $this;
+	}
+
+	/**
+	 * Automaticly load all your data types (post type, commet, taxonomy)
+	 * @return csframework\Csframework
+	 */
+	private function _load( $type )
+	{
+		$type = strtolower( $type );
+		$dirs = $this->_autoloader->getIncludePaths();
+		foreach ( $dirs as $dir ) {
+			if ( file_exists( $dir . $type ) && $handle = opendir( $dir . $type ) ) {
+				while ( false !== ( $entry = readdir( $handle ) ) ) {
+					if ( is_file( $dir . $type . '/' . $entry ) ) {
+						$class_name = $this->getNamespace() . '\\' . ucfirst( $type ) . ucfirst( basename( $entry, '.php' ) );
+						if ( class_exists( $class_name ) ) {
+							$class_name::getInstance()->setFieldsBase( $this->_fields_var );
+							if ( is_admin() ) {
+								$class_name::getInstance()->addMetaboxes();
+							}
+						}
+					}
+				}
+				closedir( $handle );
+			}
+		}
+		return $this;
+	}
+
+	/**
 	 * WP init action trigger
 	 * @return void
 	 */
 	public function init()
 	{
+		$data_types = apply_filters( 'csframework_data_types', array(
+			'posttype',
+			'comment',
+		) );
 		$this->_loadTaxonomies();
+		/*$this->_loadTaxonomies();
 		$this->_loadPosttypes();
+		$this->_loadComments();*/
+		foreach ( $data_types as $type ) {
+			$this->_load( $type );
+		}
 	}
 
 	/**

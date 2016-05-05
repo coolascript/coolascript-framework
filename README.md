@@ -86,7 +86,7 @@ class PosttypeMyposttype extends \csframework\Posttype
 			$this->slug = $post->name;
 		}
 
-		$this->order = get_post_meta( $this->id, '_myfield', true );
+		$this->myfield = get_post_meta( $this->id, '_myfield', true );
 
 		return $this;
 	}
